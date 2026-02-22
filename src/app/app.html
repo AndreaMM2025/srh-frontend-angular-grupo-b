@@ -1,14 +1,45 @@
-<h1>SRH - Sistema de Reservas de Hoteles</h1>
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" routerLink="/">SRH</a>
 
-<nav style="display:flex; gap:12px; flex-wrap:wrap; margin:12px 0;">
-  <a routerLink="/clientes">Clientes</a>
-  <a routerLink="/habitaciones">Habitaciones</a>
-  <a routerLink="/reservas">Reservas</a>
-  <a routerLink="/pagos">Pagos</a>
-  <a routerLink="/facturas">Facturas</a>
-  <a routerLink="/usuarios">Usuarios</a>
-  <a routerLink="/reportes">Reportes</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto gap-2">
+        <!-- ✅ AGREGAR INICIO -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            Inicio
+          </a>
+        </li>
+
+        <li class="nav-item"><a class="nav-link" routerLink="/clientes" routerLinkActive="active">Clientes</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/habitaciones" routerLinkActive="active">Habitaciones</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/reservas" routerLinkActive="active">Reservas</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/pagos" routerLinkActive="active">Pagos</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/facturas" routerLinkActive="active">Facturas</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/reportes" routerLinkActive="active">Reportes</a></li>
+      </ul>
+    </div>
+  </div>
 </nav>
 
-<hr />
-<router-outlet></router-outlet>
+<header class="bg-light border-bottom">
+  <div class="container py-4">
+    <h1 class="h3 mb-1 fw-bold">SRH - Sistema de Reservas de Hoteles</h1>
+    <p class="text-muted mb-0">Frontend Angular consumiendo servicios FastAPI</p>
+  </div>
+</header>
+
+<main class="container py-4">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="border-top py-3">
+  <div class="container text-muted small">
+    © 2026 SRH - Grupo B
+  </div>
+</footer>

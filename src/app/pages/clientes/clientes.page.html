@@ -1,32 +1,75 @@
-<h2>Clientes</h2>
+<div class="row g-4">
+  <!-- Formulario -->
+  <div class="col-12 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="h6 mb-0 fw-bold">Clientes</h2>
+          <span class="badge text-bg-primary">Nuevo</span>
+        </div>
+      </div>
 
-<form [formGroup]="form" (ngSubmit)="guardar()" style="display:grid; gap:8px; max-width:520px;">
-  <input placeholder="Nombre" formControlName="nombre" />
-  <input placeholder="Identificación" formControlName="identificacion" />
-  <input placeholder="Teléfono" formControlName="telefono" />
-  <input placeholder="Correo" formControlName="correo" />
-  <input placeholder="Nacionalidad" formControlName="nacionalidad" />
-  <button type="submit">Guardar</button>
-</form>
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-2">
+          <input class="form-control" placeholder="Nombre" formControlName="nombre" />
+          <input class="form-control" placeholder="Identificación" formControlName="identificacion" />
+          <input class="form-control" placeholder="Teléfono" formControlName="telefono" />
+          <input class="form-control" placeholder="Correo" formControlName="correo" />
+          <input class="form-control" placeholder="Nacionalidad" formControlName="nacionalidad" />
 
-<hr />
+          <button class="btn btn-primary mt-2" type="submit" [disabled]="form.invalid">
+            Guardar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-<p *ngIf="loading">Cargando...</p>
+  <!-- Tabla -->
+  <div class="col-12 col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h2 class="h6 mb-0 fw-bold">Listado</h2>
+        <button class="btn btn-outline-secondary btn-sm" (click)="cargar()">
+          Recargar
+        </button>
+      </div>
 
-<table *ngIf="!loading" border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>ID</th><th>Nombre</th><th>Identificación</th><th>Teléfono</th><th>Correo</th><th>Nacionalidad</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let c of clientes">
-      <td>{{ c.id }}</td>
-      <td>{{ c.nombre }}</td>
-      <td>{{ c.identificacion }}</td>
-      <td>{{ c.telefono }}</td>
-      <td>{{ c.correo }}</td>
-      <td>{{ c.nacionalidad }}</td>
-    </tr>
-  </tbody>
-</table>
+      <div class="card-body p-0">
+        <div *ngIf="loading" class="p-3 text-muted">Cargando...</div>
+
+        <div class="table-responsive" *ngIf="!loading">
+          <table class="table table-striped table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Identificación</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Nacionalidad</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let c of clientes">
+                <td>{{ c.id }}</td>
+                <td class="fw-semibold">{{ c.nombre }}</td>
+                <td>{{ c.identificacion }}</td>
+                <td>{{ c.telefono }}</td>
+                <td>{{ c.correo }}</td>
+                <td>{{ c.nacionalidad }}</td>
+              </tr>
+
+              <tr *ngIf="clientes.length === 0">
+                <td colspan="6" class="text-center text-muted py-4">
+                  No hay clientes registrados.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
