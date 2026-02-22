@@ -15,9 +15,9 @@
                 </span>
               </div>
 
-             <div class="d-flex gap-2 align-items-center">
-              <span class="badge rounded-pill text-bg-primary fs-6">
-                {{ editandoId ? 'Editando' : 'Nuevo' }}
+              <div class="d-flex gap-2 align-items-center">
+                <span class="badge rounded-pill text-bg-primary fs-6">
+                  {{ editandoId ? 'Editando' : 'Nuevo' }}
                 </span>
 
                 <button class="btn btn-sm srh-btn-outline" type="button" (click)="limpiar()">
@@ -43,10 +43,16 @@
                   <label class="form-label fw-bold">Reserva</label>
                   <select class="form-select srh-input" formControlName="reserva_id" [disabled]="loadingForm">
                     <option [ngValue]="null">Seleccione...</option>
+
                     <option *ngFor="let r of reservas" [ngValue]="r.id">
-                      #{{ r.id }} - Cliente {{ r.cliente_id }} / Hab {{ r.habitacion_id }} ({{ r.fecha_inicio }} → {{ r.fecha_fin }})
+                      {{ labelReserva(r.id) }}
                     </option>
                   </select>
+
+                  <!--  si está cancelada, aviso visual -->
+                  <small class="text-muted" *ngIf="form.value.reserva_id as rid">
+                    Estado reserva/factura: <b>{{ estadoFactura(rid) }}</b>
+                  </small>
                 </div>
 
                 <div>
@@ -64,7 +70,9 @@
 
                 <button class="btn srh-btn-primary w-100" type="submit" [disabled]="form.invalid || saving">
                   <i class="bi bi-save2-fill me-2"></i>
-                  {{ editandoId !== null ? (saving ? 'Actualizando...' : 'Actualizar') : (saving ? 'Guardando...' : 'Guardar') }}
+                  {{ editandoId !== null
+                      ? (saving ? 'Actualizando...' : 'Actualizar')
+                      : (saving ? 'Guardando...' : 'Guardar') }}
                 </button>
 
               </form>
@@ -91,7 +99,7 @@
                   <input
                     #search
                     class="form-control srh-search-input"
-                    placeholder="🔎Buscar por cliente, reserva, total, fecha..."
+                    placeholder="🔎Buscar por cliente, reserva, total, fecha, estado..."
                     (input)="onBuscar(search.value)"
                   />
                 </div>
@@ -103,11 +111,13 @@
             </div>
 
             <div class="card-body p-0">
+              <!-- Loading -->
               <div *ngIf="loadingList" class="p-4 text-center text-muted">
                 <div class="spinner-border me-2" role="status" aria-hidden="true"></div>
                 Cargando facturas...
               </div>
 
+              <!-- Tabla -->
               <div class="table-responsive srh-table-wrap" *ngIf="!loadingList">
                 <table class="table srh-table align-middle mb-0">
                   <thead>
@@ -117,44 +127,62 @@
                       <th>Reserva</th>
                       <th>Total</th>
                       <th>Fecha</th>
+                      <!--  NUEVO: Estado -->
+                      <th>Estado</th>
                       <th class="text-center">Acciones</th>
                     </tr>
                   </thead>
 
                   <tbody>
+
                     <tr *ngFor="let f of facturasVMFiltradas; trackBy: trackById">
-  <td class="fw-bold">{{ f.id }}</td>
-  <td class="fw-semibold">{{ f.clienteNombre }}</td>
-  <td class="fw-semibold">{{ f.reservaLabel }}</td>
-  <td class="fw-bold">$ {{ f.total }}</td>
-  <td>{{ f.fecha }}</td>
+                      <td class="fw-bold">{{ f.id }}</td>
+                      <td class="fw-semibold">{{ f.clienteNombre }}</td>
+                      <td class="fw-semibold">{{ f.reservaLabel }}</td>
+                      <td class="fw-bold">$ {{ f.total }}</td>
+                      <td>{{ f.fecha }}</td>
 
-  <td class="text-end">
-    <button class="btn srh-action srh-edit me-2" type="button" (click)="editar(f)">
-      <i class="bi bi-pencil-square me-1"></i> Editar
-    </button>
+                      <!--  Estado depende de la reserva (cancelada/emiteda/pendiente) -->
+                      <td>
+                        <span class="badge" [ngClass]="badgeFactura(f.reserva_id)">
+                          {{ estadoFactura(f.reserva_id) }}
+                        </span>
+                      </td>
 
-    <button
-      class="btn srh-action srh-del me-2"
-      type="button"
-      (click)="eliminar(f)"
-      [disabled]="deletingId === f.id"
-    >
-      <i class="bi bi-trash me-1"></i>
-      {{ deletingId === f.id ? 'Eliminando...' : 'Eliminar' }}
-    </button>
+                      <td class="text-end">
+                        <!--  editar debe recibir la factura real -->
+                        <button class="btn srh-action srh-edit me-2" type="button" (click)="editar(f.raw)">
+                          <i class="bi bi-pencil-square me-1"></i> Editar
+                        </button>
 
-    <!--  TXT -->
-    <button class="btn srh-action srh-edit me-2" type="button" (click)="descargarTxt(f)">
-      <i class="bi bi-file-earmark-text me-1"></i> TXT
-    </button>
+                        <button
+                          class="btn srh-action srh-del me-2"
+                          type="button"
+                          (click)="eliminar(f.raw)"
+                          [disabled]="deletingId === f.id"
+                        >
+                          <i class="bi bi-trash me-1"></i>
+                          {{ deletingId === f.id ? 'Eliminando...' : 'Eliminar' }}
+                        </button>
 
-    <!-- PDF (imprimir/guardar como PDF) -->
-    <button class="btn srh-action srh-edit" type="button" (click)="imprimirPdf(f)">
-      <i class="bi bi-file-earmark-pdf me-1"></i> PDF
-    </button>
-  </td>
-</tr>
+                        <!-- TXT -->
+                        <button class="btn srh-action srh-edit me-2" type="button" (click)="descargarTxt(f.raw)">
+                          <i class="bi bi-file-earmark-text me-1"></i> TXT
+                        </button>
+
+                        <!-- PDF -->
+                        <button class="btn srh-action srh-edit" type="button" (click)="imprimirPdf(f.raw)">
+                          <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="facturasVMFiltradas.length === 0">
+                      <td colspan="7" class="text-center text-muted py-4">
+                        No hay facturas registradas.
+                      </td>
+                    </tr>
+
                   </tbody>
 
                 </table>
