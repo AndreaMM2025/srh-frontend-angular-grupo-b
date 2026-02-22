@@ -4,4 +4,5 @@ export interface Factura {
   reserva_id: number;
   total: number;
   fecha: string; // "YYYY-MM-DD"
+  estado: string; // pendiente, cancelado, emitida
 }

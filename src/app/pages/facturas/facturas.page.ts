@@ -12,6 +12,8 @@ import { Factura } from '../../core/models/factura';
 import { Cliente } from '../../core/models/cliente';
 import { Reserva } from '../../core/models/reserva';
 
+type FacturaEstado = 'emitida' | 'cancelada' | 'pendiente';
+
 type FacturaVM = {
   id: number;
   cliente_id: number;
@@ -21,7 +23,7 @@ type FacturaVM = {
 
   clienteNombre: string;
   reservaLabel: string;
-  estado: 'emitida' | 'cancelada' | 'pendiente';
+  estado: FacturaEstado;
 
   raw: Factura;
 };
@@ -42,17 +44,17 @@ export class FacturasPage implements OnInit {
   private zone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
 
+  // data
   facturas: Factura[] = [];
-
-  // ✅ VM para pintar rápido (tu HTML usa esto)
   facturasVM: FacturaVM[] = [];
   facturasVMFiltradas: FacturaVM[] = [];
 
   clientes: Cliente[] = [];
   reservas: Reserva[] = [];
 
-  loadingList = false;   // tabla
-  loadingForm = false;   // combos
+  // ui
+  loadingList = false;
+  loadingForm = false;
   saving = false;
 
   editandoId: number | null = null;
@@ -62,19 +64,19 @@ export class FacturasPage implements OnInit {
     cliente_id: [null as number | null, Validators.required],
     reserva_id: [null as number | null, Validators.required],
     total: [0, [Validators.required, Validators.min(0)]],
-    fecha: ['', Validators.required], // YYYY-MM-DD
+    fecha: ['', Validators.required],
   });
 
   ngOnInit(): void {
-    // ✅ listado no depende de combos
+    // ✅ listado rápido (no depende de combos)
     this.cargarFacturas();
 
-    // ✅ combos aparte
+    // ✅ combos aparte (no bloquean tabla)
     this.cargarCombos();
   }
 
   // ==========================
-  // LISTADO (RÁPIDO)
+  // LISTADO (RÁPIDO + REPINTA)
   // ==========================
   cargarFacturas() {
     this.loadingList = true;
@@ -82,15 +84,17 @@ export class FacturasPage implements OnInit {
 
     this.facturasService
       .listar()
-      .pipe(finalize(() => {
-        this.loadingList = false;
-        this.cdr.detectChanges();
-      }))
+      .pipe(
+        finalize(() => {
+          this.loadingList = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (d) => {
           this.zone.run(() => {
             this.facturas = d ?? [];
-            this.rebuildVM(); // ✅ arma VM con lo que haya disponible
+            this.rebuildVM();
             this.cdr.detectChanges();
           });
         },
@@ -113,8 +117,7 @@ export class FacturasPage implements OnInit {
       pending--;
       if (pending <= 0) {
         this.loadingForm = false;
-
-        // ✅ cuando llegan combos, re-armamos labels/estado y repintamos
+        // ✅ cuando llegan combos, re-armamos labels/estado
         this.rebuildVM();
         this.cdr.detectChanges();
       }
@@ -142,7 +145,7 @@ export class FacturasPage implements OnInit {
   }
 
   // ==========================
-  // ARMADO VM (CLAVE)
+  // VM (para pintar bonito/rápido)
   // ==========================
   private rebuildVM() {
     const vm: FacturaVM[] = (this.facturas ?? []).map((f) => {
@@ -163,19 +166,18 @@ export class FacturasPage implements OnInit {
       };
     });
 
-    // orden desc por id (opcional)
-    vm.sort((a, b) => b.id - a.id);
+    // ✅ ID ascendente (1,2,3...) como pediste
+    vm.sort((a, b) => a.id - b.id);
 
     this.facturasVM = vm;
     this.facturasVMFiltradas = [...vm];
   }
 
   // ==========================
-  // BUSCAR (sobre VM)
+  // BUSCAR
   // ==========================
   onBuscar(texto: string) {
     const q = (texto ?? '').toLowerCase().trim();
-
     if (!q) {
       this.facturasVMFiltradas = [...this.facturasVM];
       this.cdr.detectChanges();
@@ -235,7 +237,7 @@ export class FacturasPage implements OnInit {
     if (this.editandoId !== null) {
       const id = this.editandoId;
 
-      // optimista
+      // ✅ optimista
       const nuevo: Factura = { id, ...payload } as any;
       this.facturas = this.facturas.map((x) => (x.id === id ? nuevo : x));
       this.rebuildVM();
@@ -243,10 +245,12 @@ export class FacturasPage implements OnInit {
 
       this.facturasService
         .actualizar(id, payload as any)
-        .pipe(finalize(() => {
-          this.saving = false;
-          this.cdr.detectChanges();
-        }))
+        .pipe(
+          finalize(() => {
+            this.saving = false;
+            this.cdr.detectChanges();
+          })
+        )
         .subscribe({
           next: (resp) => {
             this.facturas = this.facturas.map((x) => (x.id === id ? resp : x));
@@ -266,13 +270,15 @@ export class FacturasPage implements OnInit {
     // CREATE
     this.facturasService
       .crear(payload as any)
-      .pipe(finalize(() => {
-        this.saving = false;
-        this.cdr.detectChanges();
-      }))
+      .pipe(
+        finalize(() => {
+          this.saving = false;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: (resp) => {
-          this.facturas = [resp, ...this.facturas];
+          this.facturas = [...this.facturas, resp]; // (ascendente) agregamos al final
           this.rebuildVM();
           this.limpiar();
           this.cdr.detectChanges();
@@ -294,10 +300,12 @@ export class FacturasPage implements OnInit {
 
     this.facturasService
       .eliminar(f.id)
-      .pipe(finalize(() => {
-        this.deletingId = null;
-        this.cdr.detectChanges();
-      }))
+      .pipe(
+        finalize(() => {
+          this.deletingId = null;
+          this.cdr.detectChanges();
+        })
+      )
       .subscribe({
         next: () => {},
         error: (e) => {
@@ -310,9 +318,9 @@ export class FacturasPage implements OnInit {
   }
 
   // ==========================
-  // ESTADO FACTURA (VA DE LA MANO CON RESERVA)
+  // ESTADO (VA DE LA MANO CON RESERVA)
   // ==========================
-  estadoFactura(reserva_id: number): 'emitida' | 'cancelada' | 'pendiente' {
+  estadoFactura(reserva_id: number): FacturaEstado {
     const r = this.reservas.find((x) => x.id === reserva_id);
     const est = (r?.estado ?? '').toLowerCase();
     if (est.includes('cancel')) return 'cancelada';
@@ -346,7 +354,7 @@ export class FacturasPage implements OnInit {
   }
 
   // ==========================
-  // TXT / PDF (NOMBRES COMO TU HTML)
+  // TXT / PDF
   // ==========================
   descargarTxt(f: Factura) {
     const cliente = this.nombreCliente(f.cliente_id);
@@ -384,7 +392,7 @@ Estado: ${estado}
         <title>Factura #${f.id}</title>
         <style>
           body{font-family: Arial, sans-serif; padding: 24px;}
-          .box{border:1px solid #ddd; padding:16px; border-radius:10px; max-width:600px;}
+          .box{border:1px solid #ddd; padding:16px; border-radius:10px; max-width:700px;}
           h1{margin:0 0 12px 0;}
           .row{margin:6px 0;}
           .k{font-weight:bold;}
@@ -411,5 +419,5 @@ Estado: ${estado}
     w.document.open();
     w.document.write(html);
     w.document.close();
-    }
-    }
+  }
+}
