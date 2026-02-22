@@ -1,0 +1,170 @@
+<div class="reservas-page py-4">
+  <div class="container">
+    <div class="reservas-wrap">
+      <div class="row g-4 justify-content-center">
+
+        <!-- ===================== FORM ===================== -->
+        <div class="col-12 col-lg-4">
+          <div class="card srh-card shadow-lg">
+            <div class="card-header srh-header d-flex align-items-center justify-content-between py-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-calendar2-check-fill srh-ico"></i>
+                <span class="fw-bold fs-4">
+                  <span class="fw-bold-emoji fs-1">🗓️</span> Reservas
+                </span>
+              </div>
+
+              <button class="btn btn-sm srh-btn-outline" type="button" (click)="limpiar()">
+                <i class="bi bi-eraser-fill me-1"></i> Limpiar
+              </button>
+            </div>
+
+            <div class="card-body">
+              <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
+
+                <div>
+                  <label class="form-label fw-bold">Cliente</label>
+                  <select class="form-select srh-input" formControlName="cliente_id" [disabled]="loadingForm">
+                    <option [ngValue]="null">Seleccione...</option>
+                    <option *ngFor="let c of clientes" [ngValue]="c.id">
+                      {{ c.nombre }} ({{ c.identificacion }})
+                    </option>
+                  </select>
+                  <small *ngIf="loadingForm" class="text-muted">Cargando clientes...</small>
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Habitación</label>
+                  <select class="form-select srh-input" formControlName="habitacion_id" [disabled]="loadingForm">
+                    <option [ngValue]="null">Seleccione...</option>
+                    <option *ngFor="let h of habitacionesDisponibles" [ngValue]="h.id">
+                      {{ h.numero }} - {{ h.tipo }} (${{ h.precio }})
+                    </option>
+                  </select>
+                  <small class="text-muted">Solo se muestran habitaciones disponibles.</small>
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Fecha inicio</label>
+                  <input type="date" class="form-control srh-input" formControlName="fecha_inicio" />
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Fecha fin</label>
+                  <input type="date" class="form-control srh-input" formControlName="fecha_fin" />
+                </div>
+
+                <button class="btn srh-btn-primary w-100" type="submit" [disabled]="form.invalid || saving">
+                  <i class="bi bi-save2-fill me-2"></i>
+                  {{ saving ? 'Guardando...' : 'Crear reserva' }}
+                </button>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== LISTADO ===================== -->
+        <div class="col-12 col-lg-8">
+          <div class="card srh-card shadow-lg">
+
+            <div class="card-header srh-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-card-list srh-ico"></i>
+                <span class="fw-bold fs-4">
+                  <span class="fw-bold-emoji fs-1">📋</span> Listado
+                </span>
+              </div>
+
+              <div class="d-flex align-items-center gap-2 ms-auto">
+                <div class="srh-search">
+                  <i class="bi bi-search srh-search-ico"></i>
+                  <input
+                    #search
+                    class="form-control srh-search-input"
+                    placeholder="🔍 Buscar por cliente, habitación, fechas, estado..."
+                    (input)="onBuscar(search.value)"
+                  />
+                </div>
+
+                <button class="btn srh-btn-reload" type="button" (click)="cargarReservas()">
+                  <i class="bi bi-arrow-clockwise me-1"></i> Recargar
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body p-0">
+              <!-- Loading -->
+              <div *ngIf="loadingList" class="p-4 text-center text-muted">
+                <div class="spinner-border me-2" role="status" aria-hidden="true"></div>
+                Cargando reservas...
+              </div>
+
+              <!-- Tabla -->
+              <div class="table-responsive" *ngIf="!loadingList">
+                <table class="table srh-table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Cliente</th>
+                      <th>Habitación</th>
+                      <th>Inicio</th>
+                      <th>Fin</th>
+                      <th>Estado</th>
+                      <th style="width:220px" class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let r of reservasFiltradas; trackBy: trackById">
+                      <td class="fw-bold">{{ r.id }}</td>
+                      <td class="fw-semibold">{{ nombreCliente(r.cliente_id) }}</td>
+                      <td class="fw-semibold">{{ numeroHabitacion(r.habitacion_id) }}</td>
+                      <td>{{ r.fecha_inicio }}</td>
+                      <td>{{ r.fecha_fin }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="badgeEstado(r.estado)">
+                          {{ r.estado || 'pendiente' }}
+                        </span>
+                      </td>
+
+                      <td class="text-end">
+                        <button
+                          class="btn srh-action srh-edit me-2"
+                          type="button"
+                          (click)="confirmar(r)"
+                          [disabled]="confirmandoId === r.id || (r.estado || '').toLowerCase().includes('confirm')"
+                        >
+                          <i class="bi bi-check2-circle me-1"></i>
+                          {{ confirmandoId === r.id ? 'Confirmando...' : 'Confirmar' }}
+                        </button>
+
+                        <button
+                          class="btn srh-action srh-del"
+                          type="button"
+                          (click)="cancelar(r)"
+                          [disabled]="cancelandoId === r.id || (r.estado || '').toLowerCase().includes('cancel')"
+                        >
+                          <i class="bi bi-x-circle me-1"></i>
+                          {{ cancelandoId === r.id ? 'Cancelando...' : 'Cancelar' }}
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="reservasFiltradas.length === 0">
+                      <td colspan="7" class="text-center text-muted py-4">
+                        No hay reservas registradas.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,143 @@
+.reservas-page {
+  min-height: calc(100vh - 110px);
+  padding-bottom: 2rem;
+
+  background: linear-gradient(120deg, #ab81d7, #326f93, #b76b20, #b8346b);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.srh-card {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.srh-header {
+  border: 0;
+  color: #0b1b3a;
+  background: linear-gradient(90deg, #47d7ff, #4e7bff, #8c52ff);
+}
+
+.srh-ico {
+  font-size: 42px;  // icono grande como quieres
+  line-height: 1;
+}
+
+.srh-input {
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.srh-btn-primary {
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 14px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(90deg, #4e7bff, #8c52ff);
+  box-shadow: 0 10px 25px rgba(78,123,255,.25);
+
+  &:hover { transform: translateY(-1px); }
+}
+
+.srh-btn-outline {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.55);
+  color: #fff;
+  background: rgba(255,255,255,.15);
+}
+
+.srh-btn-reload {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(90deg, #ff4fd8, #6a5cff);
+  box-shadow: 0 10px 25px rgba(255,79,216,.20);
+}
+
+.srh-search {
+  position: relative;
+}
+
+.srh-search-ico {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .8;
+  color: #0b1b3a;
+}
+
+.srh-search-input {
+  border-radius: 14px;
+  padding: 10px 14px 10px 36px;
+  min-width: 320px;
+}
+
+.srh-table {
+  font-size: 14px; // más clara (no pequeña)
+
+  thead th {
+    color: #fff;
+    font-weight: 900;
+    background: linear-gradient(90deg, #4e7bff, #8c52ff);
+    border: 0;
+    padding: 14px;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 14px;
+    border-top: 1px solid rgba(0,0,0,.06);
+  }
+
+  tbody tr:hover {
+    background: rgba(140,82,255,.06);
+  }
+}
+
+.srh-action {
+  border-radius: 12px;
+  font-weight: 800;
+  padding: 8px 10px;
+}
+
+.srh-edit {
+  background: rgba(46, 204, 113, .12);
+  border: 1px solid rgba(46, 204, 113, .35);
+  color: #0f8a3a;
+}
+
+.srh-del {
+  background: rgba(255,91,91,.12);
+  border: 1px solid rgba(255,91,91,.35);
+  color: #ff3b3b;
+}
+
+/* badges estado */
+.srh-b-ok { background: #2ecc71; }
+.srh-b-busy { background: #ff5b5b; }
+.srh-b-warn { background: #ff8c42; }
+
+/* Estilo para los iconos de Bootstrap */
+.srh-ico {
+  font-size: 1.8rem; /* Tamaño grande */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Estilo para los emojis dentro de los encabezados */
+.fw-bold-emoji {
+  font-size: 1.8rem;
+  vertical-align: middle;
+  margin-right: 5px;
+}
