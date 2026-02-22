@@ -30,14 +30,17 @@ export class ClientesPage implements OnInit {
     this.cargar();
   }
 
-  cargar() {
-    this.loading = true;
-    this.clientesService.listar().subscribe({
-      next: (d) => (this.clientes = d),
-      error: (e) => console.error(e),
-      complete: () => (this.loading = false),
-    });
-  }
+cargar() {
+  this.loading = true;
+  this.clientesService.listar().subscribe({
+    next: (d) => (this.clientes = d),
+    error: (e) => {
+      console.error(e);
+      this.loading = false;  
+    },
+    complete: () => (this.loading = false),
+  });
+}
 
 guardar() {
   if (this.form.invalid) return;
