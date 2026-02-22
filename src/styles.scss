@@ -116,7 +116,7 @@ body{
 
 /* ícono */
 .srh-hero-icon{
-  font-size: 1.4rem;
+  font-size: 100px;
   color: #fff;
   width: 42px;
   height: 42px;
@@ -130,7 +130,7 @@ body{
 .srh-hero::after{
   content: "🏨";
   position: absolute;
-  right: 50px;
+  right: 20px;
   top: 20px;
   font-size: 120px;
   opacity: .10;

@@ -1,0 +1,214 @@
+<div class="habitaciones-page py-4">
+  <div class="container">
+    <div class="habitaciones-wrap">
+
+      <div class="row g-4 justify-content-center">
+
+        <!-- ===================== FORM ===================== -->
+        <div class="col-12 col-lg-4">
+          <div class="card srh-card shadow-lg">
+
+            <div class="card-header srh-header d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                 <span class="srh-ico">🏨</span>
+                 <strong>Habitaciones</strong>
+              </div>
+
+              <div class="d-flex gap-2">
+             <span class="badge rounded-pill text-bg-primary fs-6">
+                  {{ editandoId !== null ? 'Editando' : 'Nuevo' }}
+                </span>
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-light"
+                  (click)="limpiar()"
+                >
+                  <i class="bi bi-eraser-fill me-1 fs-6"></i> Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+
+              <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
+
+                <div>
+                  <label class="form-label fw-bold">Número</label>
+                  <input
+                    class="form-control"
+                    placeholder="Ej: 101"
+                    formControlName="numero"
+                  />
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Tipo</label>
+                  <input
+                    class="form-control"
+                    placeholder="Ej: Suite"
+                    formControlName="tipo"
+                  />
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Precio</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Ej: 45"
+                      formControlName="precio"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="disp"
+                    formControlName="disponible"
+                  />
+                  <label class="form-check-label fw-bold" for="disp">
+                    Disponible
+                  </label>
+                </div>
+
+                <button
+                  class="btn btn-primary w-100"
+                  type="submit"
+                  [disabled]="form.invalid || saving"
+                >
+                  <i class="bi bi-save-fill me-2"></i>
+                  {{ editandoId !== null ? 'Actualizar' : 'Guardar' }}
+                </button>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== LISTADO ===================== -->
+     <div class="col-12 col-lg-8">
+        <div class="card srh-card shadow-lg">
+          <div class="card-header srh-head d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="srh-ico">📋</span>
+              <strong>Listado</strong>
+            </div>
+              <div class="d-flex align-items-center gap-2 ms-auto">
+
+                <div class="input-group" style="max-width:300px;">
+                  <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                  </span>
+                  <input
+                    #search
+                    type="text"
+                    class="form-control"
+                    placeholder="🔎Buscar por número, tipo..."
+                    (input)="onBuscar(search.value)"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  (click)="cargar()"
+                >
+                  <i class="bi bi-arrow-clockwise me-1"></i>
+                  Recargar
+                </button>
+
+              </div>
+            </div>
+
+            <div class="card-body p-0">
+
+              <!-- Loading -->
+              <div *ngIf="loading" class="text-center py-4">
+                <div class="spinner-border text-primary"></div>
+                <div class="mt-2">Cargando habitaciones...</div>
+              </div>
+
+              <!-- Tabla -->
+              <div *ngIf="!loading" class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                  <thead class="table-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Número</th>
+                      <th>Tipo</th>
+                      <th>Precio</th>
+                      <th>Disponible</th>
+                      <th style="width:220px" class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    <tr *ngFor="let h of habitacionesFiltradas; trackBy: trackById">
+
+                      <td class="fw-bold">{{ h.id }}</td>
+                      <td>{{ h.numero }}</td>
+                      <td>{{ h.tipo }}</td>
+                      <td>$ {{ h.precio }}</td>
+
+                      <td>
+                        <span
+                          class="badge"
+                          [ngClass]="h.disponible ? 'bg-success' : 'bg-secondary'"
+                        >
+                          {{ h.disponible ? 'Disponible' : 'Ocupada' }}
+                        </span>
+                      </td>
+
+                      <td class="text-end">
+
+                        <button
+                          type="button"
+                          class="btn btn-outline-primary btn-sm me-2"
+                          (click)="editar(h)"
+                        >
+                          <i class="bi bi-pencil-square me-1"></i>
+                          Editar
+                        </button>
+
+                    <button
+  type="button"
+  class="btn btn-outline-danger btn-sm"
+  (click)="eliminar(h)"
+  [disabled]="deletingId === h.id"
+>
+  <i class="bi bi-trash me-1"></i>
+  {{ deletingId === h.id ? 'Eliminando...' : 'Eliminar' }}
+</button>
+                      </td>
+
+                    </tr>
+
+                    <tr *ngIf="habitacionesFiltradas.length === 0">
+                      <td colspan="6" class="text-center py-4 text-muted">
+                        No hay habitaciones registradas.
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
