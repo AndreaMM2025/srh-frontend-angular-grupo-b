@@ -147,31 +147,33 @@ export class FacturasPage implements OnInit {
   // ==========================
   // VM (para pintar bonito/rápido)
   // ==========================
-  private rebuildVM() {
-    const vm: FacturaVM[] = (this.facturas ?? []).map((f) => {
-      const clienteNombre = this.nombreCliente(f.cliente_id);
-      const reservaLabel = this.labelReserva(f.reserva_id);
-      const estado = this.estadoFactura(f.reserva_id);
+private rebuildVM() {
+  const vm: FacturaVM[] = (this.facturas ?? []).map((f) => {
+    const clienteNombre = this.nombreCliente(f.cliente_id);
+    const reservaLabel = this.labelReserva(f.reserva_id);
 
-      return {
-        id: f.id,
-        cliente_id: f.cliente_id,
-        reserva_id: f.reserva_id,
-        total: f.total,
-        fecha: f.fecha,
-        clienteNombre,
-        reservaLabel,
-        estado,
-        raw: f,
-      };
-    });
+    // ✅ estado sale de reservas
+    const estado = this.estadoFactura(f.reserva_id);
 
-    // ✅ ID ascendente (1,2,3...) como pediste
-    vm.sort((a, b) => a.id - b.id);
+    return {
+      id: f.id,
+      cliente_id: f.cliente_id,
+      reserva_id: f.reserva_id,
+      total: f.total,
+      fecha: f.fecha,
+      clienteNombre,
+      reservaLabel,
+      estado,
+      raw: f,
+    };
+  });
 
-    this.facturasVM = vm;
-    this.facturasVMFiltradas = [...vm];
-  }
+  // ✅ orden ASC (1 arriba, 2 abajo…)
+  vm.sort((a, b) => a.id - b.id);
+
+  this.facturasVM = vm;
+  this.facturasVMFiltradas = [...vm];
+}
 
   // ==========================
   // BUSCAR
@@ -320,21 +322,20 @@ export class FacturasPage implements OnInit {
   // ==========================
   // ESTADO (VA DE LA MANO CON RESERVA)
   // ==========================
-  estadoFactura(reserva_id: number): FacturaEstado {
-    const r = this.reservas.find((x) => x.id === reserva_id);
-    const est = (r?.estado ?? '').toLowerCase();
-    if (est.includes('cancel')) return 'cancelada';
-    if (est.includes('confirm')) return 'emitida';
-    return 'pendiente';
-  }
+  estadoFactura(reserva_id: number): 'emitida' | 'cancelada' | 'pendiente' {
+  const r = this.reservas.find((x) => x.id === reserva_id);
+  const est = (r?.estado ?? '').toLowerCase();
 
-  badgeFactura(reserva_id: number) {
-    const e = this.estadoFactura(reserva_id);
-    if (e === 'emitida') return 'srh-b-ok';
-    if (e === 'cancelada') return 'srh-b-busy';
-    return 'srh-b-warn';
-  }
-
+  if (est.includes('cancel')) return 'cancelada';
+  if (est.includes('confirm')) return 'emitida';
+  return 'pendiente';
+}
+ badgeFactura(reserva_id: number) {
+  const e = this.estadoFactura(reserva_id);
+  if (e === 'emitida') return 'srh-b-ok';
+  if (e === 'cancelada') return 'srh-b-busy';
+  return 'srh-b-warn';
+}
   // ==========================
   // HELPERS
   // ==========================
@@ -353,6 +354,11 @@ export class FacturasPage implements OnInit {
     return item.id;
   }
 
+  badgeFacturaEstado(e: 'emitida' | 'cancelada' | 'pendiente') {
+  if (e === 'emitida') return 'srh-b-ok';
+  if (e === 'cancelada') return 'srh-b-busy';
+  return 'srh-b-warn';
+}
   // ==========================
   // TXT / PDF
   // ==========================

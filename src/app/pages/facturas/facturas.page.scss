@@ -2,7 +2,7 @@
   min-height: calc(100vh - 110px);
   padding-bottom: 2rem;
 
-  background: linear-gradient(120deg, #ab81d7, #326f93, #b76b20, #b8346b);
+  background: linear-gradient(120deg, #b9403b, #326f93, #b76b20, #b8346b);
   background-size: 300% 300%;
   animation: bgMove 10s ease-in-out infinite;
 }
@@ -111,4 +111,36 @@
   background: rgba(255,91,91,.10);
   border: 1px solid rgba(255,91,91,.35);
   color: #ff3b3b;
+}
+
+.facturas-table {
+  table-layout: fixed;   
+  width: 100%;
+}
+
+.facturas-table th,
+.facturas-table td {
+  padding: 14px 14px;    
+  vertical-align: middle;
+}
+
+.facturas-table thead th {
+  white-space: nowrap;   
+}
+
+
+.facturas-table .col-id { width: 70px; }
+.facturas-table .col-cliente { width: 150px; }
+.facturas-table .col-reserva { width: 200px; }
+.facturas-table .col-total { width: 90px; }
+.facturas-table .col-fecha { width: 100px; }
+.facturas-table .col-estado { width: 120px; }
+.facturas-table .col-acciones { width: 380px; }
+
+
+.facturas-table .col-cliente,
+.facturas-table .col-reserva {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
