@@ -1,1 +1,221 @@
-/* You can add global styles to this file, and also import other style files */
+/* ====== SRH Theme ====== */
+:root{
+  --srh-primary: #2563eb;   /* azul */
+  --srh-accent: #7c3aed;    /* morado */
+  --srh-cyan: #06b6d4;      /* cyan */
+  --srh-dark: #0f172a;      /* slate */
+}
+
+/* Fondo animado suave */
+body{
+  background: linear-gradient(120deg,
+    rgba(37,99,235,.08),
+    rgba(124,58,237,.08),
+    rgba(6,182,212,.08)
+  );
+  background-size: 200% 200%;
+  animation: srhGradient 10s ease infinite;
+}
+
+@keyframes srhGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.srh-navbar{
+  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+
+.srh-navbar .nav-link{
+  color: rgba(255,255,255,.78);
+  border-radius: 999px;
+  padding: .4rem .75rem;
+  transition: all .2s ease;
+}
+
+.srh-navbar .nav-link:hover{
+  color: #fff;
+  background: rgba(255,255,255,.08);
+}
+
+.srh-navbar .nav-link.active{
+  color: #fff;
+  background: linear-gradient(90deg, rgba(37,99,235,.35), rgba(124,58,237,.35));
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.srh-card{
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: 14px;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  overflow: hidden;
+  padding: 4px;
+}
+
+.srh-card::before{
+  content:"";
+  display:block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent), var(--srh-cyan));
+}
+
+.srh-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(2, 6, 23, .12);
+  border-color: rgba(37,99,235,.35);
+}
+
+/* Botón con efecto */
+.srh-btn{
+  border-radius: 12px;
+  padding: .55rem .95rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent));
+  border: none;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.srh-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(37,99,235,.25);
+  filter: brightness(1.05);
+}
+
+.srh-btn:active{
+  transform: translateY(0px) scale(.98);
+}
+
+/* Animación de entrada suave */
+.srh-fade-in{
+  animation: srhFade .35s ease both;
+}
+
+@keyframes srhFade{
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== HERO / PANEL ===== */
+.srh-hero{
+  position: relative;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(15,23,42,.08);
+  background:
+    radial-gradient(900px 300px at 20% 10%, rgba(37,99,235,.18), transparent 60%),
+    radial-gradient(700px 300px at 80% 20%, rgba(124,58,237,.16), transparent 55%),
+    radial-gradient(600px 260px at 40% 90%, rgba(6,182,212,.14), transparent 55%),
+    rgba(255,255,255,.55);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+/* ícono */
+.srh-hero-icon{
+  font-size: 1.4rem;
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent));
+  box-shadow: 0 14px 25px rgba(37,99,235,.18);
+}
+
+.srh-hero::after{
+  content: "🏨";
+  position: absolute;
+  right: 18px;
+  top: 10px;
+  font-size: 120px;
+  opacity: .10;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.srh-hero::before{
+  content:"";
+  position:absolute;
+  inset:-60px;
+  background: linear-gradient(120deg,
+    rgba(37,99,235,.10),
+    rgba(124,58,237,.10),
+    rgba(6,182,212,.10)
+  );
+  filter: blur(22px);
+  animation: srhGlow 8s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes srhGlow{
+  0% { transform: translateX(-2%) translateY(0%); }
+  50%{ transform: translateX(2%) translateY(1%); }
+  100%{ transform: translateX(-2%) translateY(0%); }
+}
+
+html, body {
+  height: 100%;
+  font-family: "Times New Roman", Times, serif !important;
+  font-weight: bold; 
+  font-size: 15px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+main {
+  flex: 1;   
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  font-weight: 500;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+html, body {
+  height: 100%;
+  
+}
+
+body {
+  margin: 0;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Contenedor principal de toda la app */
+.srh-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Donde se renderiza el router */
+.srh-main {
+  flex: 1 1 auto;
+}
+
+/* Footer centrado */
+.srh-footer {
+  text-align: center;
+}
+
+h1, h2, h3, h4, h5, .navbar-brand {
+  font-weight: 800 !important;
+}
+
+.card-title,
+.table thead th {
+  font-weight: 800 !important;
+}
