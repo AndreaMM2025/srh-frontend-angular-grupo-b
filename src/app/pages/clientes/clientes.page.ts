@@ -1,8 +1,9 @@
-import { Component, OnInit, inject,  ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
+
 import { ClientesService } from '../../core/services/clientes.service';
 import { Cliente } from '../../core/models/cliente';
 
@@ -22,6 +23,7 @@ export class ClientesPage implements OnInit {
   clientes: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
   loading = false;
+  saving = false;
 
   editandoId: number | null = null;
 
@@ -37,51 +39,67 @@ export class ClientesPage implements OnInit {
     this.cargar();
   }
 
-cargar() {
-  this.loading = true;
+  cargar() {
+    this.loading = true;
+    this.cdr.detectChanges();
 
-  this.clientesService.listar()
-    .pipe(finalize(() => {
-      this.loading = false;
-      this.cdr.detectChanges(); 
-    }))
-    .subscribe({
-      next: (d) => {
-       
-        this.zone.run(() => {
-          this.clientes = d ?? [];
-          this.clientesFiltrados = [...this.clientes]; 
-          this.cdr.detectChanges(); // refresco inmediato
-        });
-      },
-      error: (e) => {
-        console.error(e);
-        this.clientes = [];
-        this.clientesFiltrados = [];
-        this.cdr.detectChanges();
-      }
-    });
-}
+    this.clientesService
+      .listar()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (d) => {
+          this.zone.run(() => {
+            this.clientes = d ?? [];
+            this.clientesFiltrados = [...this.clientes];
+            this.cdr.detectChanges();
+          });
+        },
+        error: (e) => {
+          console.error(e);
+          this.clientes = [];
+          this.clientesFiltrados = [];
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
   onBuscar(texto: string) {
     const q = (texto ?? '').toLowerCase().trim();
+
     if (!q) {
-      this.clientesFiltrados = this.clientes;
+      this.clientesFiltrados = [...this.clientes];
+      this.cdr.detectChanges();
       return;
     }
+
     this.clientesFiltrados = this.clientes.filter((c) =>
       `${c.nombre} ${c.identificacion} ${c.correo} ${c.telefono} ${c.nacionalidad}`
         .toLowerCase()
         .includes(q)
     );
+    this.cdr.detectChanges();
   }
 
   limpiar() {
-    this.form.reset();
+    this.form.reset({
+      nombre: '',
+      identificacion: '',
+      telefono: '',
+      correo: '',
+      nacionalidad: '',
+    });
     this.editandoId = null;
+    this.cdr.detectChanges();
   }
 
   editar(c: Cliente) {
     this.editandoId = c.id;
+
     this.form.patchValue({
       nombre: c.nombre,
       identificacion: c.identificacion,
@@ -89,6 +107,8 @@ cargar() {
       correo: c.correo,
       nacionalidad: c.nacionalidad,
     });
+
+    this.cdr.detectChanges();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -96,9 +116,21 @@ cargar() {
     const ok = confirm(`¿Eliminar cliente "${c.nombre}"?`);
     if (!ok) return;
 
+
+    const backup = [...this.clientes];
+    this.clientes = this.clientes.filter((x) => x.id !== c.id);
+    this.clientesFiltrados = [...this.clientes];
+    this.cdr.detectChanges();
+
     this.clientesService.eliminar(c.id).subscribe({
-      next: () => this.cargar(),
-      error: (e) => console.error(e),
+      next: () => {},
+      error: (e) => {
+        console.error(e);
+        // rollback
+        this.clientes = backup;
+        this.clientesFiltrados = [...this.clientes];
+        this.cdr.detectChanges();
+      },
     });
   }
 
@@ -114,25 +146,47 @@ cargar() {
       nacionalidad: (v.nacionalidad ?? '').trim(),
     };
 
-    // MODO EDITAR
-    if (this.editandoId) {
-      this.clientesService.actualizar(this.editandoId, payload).subscribe({
-        next: () => {
+    this.saving = true;
+    this.cdr.detectChanges();
+
+    if (this.editandoId !== null) {
+      const id = this.editandoId;
+
+      this.clientesService.actualizar(id, payload).subscribe({
+        next: (resp) => {
+          this.clientes = this.clientes.map((c) => (c.id === id ? resp : c));
+          this.clientesFiltrados = [...this.clientes];
+
           this.limpiar();
+          this.saving = false;
+          this.cdr.detectChanges();
+        },
+        error: (e) => {
+          console.error(e);
+          this.saving = false;
+          this.cdr.detectChanges();
           this.cargar();
         },
-        error: (e) => console.error(e),
       });
+
       return;
     }
 
-    // MODO CREAR
+    //  CREATE
     this.clientesService.crear(payload).subscribe({
-      next: () => {
+      next: (resp) => {
+        this.clientes = [resp, ...this.clientes];
+        this.clientesFiltrados = [...this.clientes];
+
         this.limpiar();
-        this.cargar();
+        this.saving = false;
+        this.cdr.detectChanges();
       },
-      error: (e) => console.error(e),
+      error: (e) => {
+        console.error(e);
+        this.saving = false;
+        this.cdr.detectChanges();
+      },
     });
   }
 }

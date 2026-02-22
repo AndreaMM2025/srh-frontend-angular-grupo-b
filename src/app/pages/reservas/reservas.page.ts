@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, inject, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -11,6 +11,20 @@ import { HabitacionesService } from '../../core/services/habitaciones.service';
 import { Reserva } from '../../core/models/reserva';
 import { Cliente } from '../../core/models/cliente';
 import { Habitacion } from '../../core/models/habitacion';
+
+type ReservaVM = {
+  id: number;
+  cliente_id: number;
+  habitacion_id: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado: 'pendiente' | 'confirmada' | 'cancelada';
+
+  clienteNombre: string;
+  habitacionLabel: string;
+
+  raw: Reserva;
+};
 
 @Component({
   standalone: true,
@@ -25,22 +39,24 @@ export class ReservasPage implements OnInit {
   private clientesService = inject(ClientesService);
   private habitacionesService = inject(HabitacionesService);
 
-  // ✅ FIX: forzar render aunque Angular no "despierte"
-  private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
 
   reservas: Reserva[] = [];
-  reservasFiltradas: Reserva[] = [];
+
+  reservasVM: ReservaVM[] = [];
+  reservasVMFiltradas: ReservaVM[] = [];
 
   clientes: Cliente[] = [];
   habitaciones: Habitacion[] = [];
 
-  loadingList = false; // SOLO tabla
-  loadingForm = false; // SOLO combos
+  loadingList = false;
+  loadingForm = false;
   saving = false;
 
-  confirmandoId: number | null = null;
-  cancelandoId: number | null = null;
+  editandoId: number | null = null;
+  deletingId: number | null = null;
+  accionandoId: number | null = null;
 
   form = this.fb.group({
     cliente_id: [null as number | null, Validators.required],
@@ -50,43 +66,38 @@ export class ReservasPage implements OnInit {
   });
 
   ngOnInit(): void {
-    this.cargarReservas(); // ✅ listado inmediato
-    this.cargarCombos();   // ✅ combos aparte
+    this.cargarReservas();
+    this.cargarCombos();
   }
 
-  // ✅ FIX PRINCIPAL: repintar aunque no toques el input
+  // ==========================
+  // LISTADO
+  // ==========================
   cargarReservas() {
     this.loadingList = true;
+    this.cdr.detectChanges();
 
     this.reservasService
       .listar()
-      .pipe(
-        finalize(() => {
-          this.loadingList = false;
-
-          // ✅ fuerza render final
-          this.zone.run(() => {
-            this.cdr.detectChanges();
-          });
-        })
-      )
+      .pipe(finalize(() => {
+        this.loadingList = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (d) => {
           this.zone.run(() => {
             this.reservas = d ?? [];
-            this.reservasFiltradas = [...this.reservas];
-
-            // ✅ pinta de inmediato
+            this.rebuildVM();
             this.cdr.detectChanges();
           });
         },
-        error: (e) => {
-          console.error(e);
-          this.zone.run(() => this.cdr.detectChanges());
-        },
+        error: (e) => console.error(e),
       });
   }
 
+  // ==========================
+  // COMBOS
+  // ==========================
   cargarCombos() {
     this.loadingForm = true;
 
@@ -95,50 +106,82 @@ export class ReservasPage implements OnInit {
       pending--;
       if (pending <= 0) {
         this.loadingForm = false;
-        // ✅ por si la vista no refresca sola
-        this.zone.run(() => this.cdr.detectChanges());
+        this.rebuildVM();
+        this.cdr.detectChanges();
       }
     };
 
     this.clientesService.listar().subscribe({
       next: (d) => {
         this.clientes = d ?? [];
-        this.zone.run(() => this.cdr.detectChanges());
+        this.rebuildVM();
+        this.cdr.detectChanges();
       },
       error: (e) => console.error(e),
       complete: done,
     });
 
-    this.habitacionesService.listar().subscribe({
-      next: (d) => {
-        this.habitaciones = d ?? [];
-        this.zone.run(() => this.cdr.detectChanges());
-      },
-      error: (e) => console.error(e),
-      complete: done,
-    });
-  }
+  this.habitacionesService.listar().subscribe({
+  next: (d) => {
+    this.habitaciones = d ?? [];
+    this.cdr.detectChanges();
+  },
+  error: (e) => console.error(e),
+  complete: done,
+});
+}
 
-  get habitacionesDisponibles(): Habitacion[] {
-    return (this.habitaciones ?? []).filter((h) => h.disponible === true);
+  // ==========================
+  // VM
+  // ==========================
+  private rebuildVM() {
+    const vm: ReservaVM[] = (this.reservas ?? []).map((r) => {
+      const clienteNombre = this.nombreCliente(r.cliente_id);
+      const habitacionLabel = this.labelHabitacion(r.habitacion_id);
+
+      return {
+        id: r.id,
+        cliente_id: r.cliente_id,
+        habitacion_id: r.habitacion_id,
+        fecha_inicio: r.fecha_inicio,
+        fecha_fin: r.fecha_fin,
+        estado: (r.estado ?? 'pendiente') as any,
+        clienteNombre,
+        habitacionLabel,
+        raw: r,
+      };
+    });
+
+    vm.sort((a, b) => a.id - b.id);
+    this.reservasVM = vm;
+    this.reservasVMFiltradas = [...vm];
   }
 
   onBuscar(texto: string) {
     const q = (texto ?? '').toLowerCase().trim();
+
     if (!q) {
-      this.reservasFiltradas = [...this.reservas];
+      this.reservasVMFiltradas = [...this.reservasVM];
+      this.cdr.detectChanges();
       return;
     }
 
-    this.reservasFiltradas = this.reservas.filter((r) => {
-      const cliente = this.nombreCliente(r.cliente_id);
-      const hab = this.numeroHabitacion(r.habitacion_id);
-      return `${r.id} ${cliente} ${hab} ${r.fecha_inicio} ${r.fecha_fin} ${r.estado}`
+    this.reservasVMFiltradas = this.reservasVM.filter((r) => {
+      return `${r.id} ${r.clienteNombre} ${r.habitacionLabel} ${r.fecha_inicio} ${r.fecha_fin} ${r.estado}`
         .toLowerCase()
         .includes(q);
     });
+
+    this.cdr.detectChanges();
   }
 
+  trackById(_: number, item: ReservaVM) {
+    return item.id;
+  }
+
+  // ==========================
+  // FORM
+  // ==========================
   limpiar() {
     this.form.reset({
       cliente_id: null,
@@ -146,23 +189,22 @@ export class ReservasPage implements OnInit {
       fecha_inicio: '',
       fecha_fin: '',
     });
+    this.editandoId = null;
+    this.cdr.detectChanges();
   }
 
-  nombreCliente(id: number) {
-    const c = this.clientes.find((x) => x.id === id);
-    return c ? c.nombre : `Cliente #${id}`;
-  }
-
-  numeroHabitacion(id: number) {
-    const h = this.habitaciones.find((x) => x.id === id);
-    return h ? h.numero : `Hab #${id}`;
-  }
-
-  private fechasValidas(fi: string, ff: string) {
-    if (!fi || !ff) return false;
-    return new Date(fi).getTime() <= new Date(ff).getTime();
-  }
-
+editar(r: Reserva) {
+  this.editandoId = r.id;
+  this.form.patchValue({
+    cliente_id: r.cliente_id,
+    habitacion_id: r.habitacion_id,
+    fecha_inicio: r.fecha_inicio,
+    fecha_fin: r.fecha_fin,
+  }, { emitEvent: false });
+  
+  this.cdr.detectChanges();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
   guardar() {
     if (this.form.invalid) return;
 
@@ -172,117 +214,123 @@ export class ReservasPage implements OnInit {
       habitacion_id: Number(v.habitacion_id),
       fecha_inicio: String(v.fecha_inicio),
       fecha_fin: String(v.fecha_fin),
-      estado: 'pendiente',
     };
 
-    if (!this.fechasValidas(payload.fecha_inicio, payload.fecha_fin)) {
-      alert('La fecha fin no puede ser menor que la fecha inicio.');
+    this.saving = true;
+    this.cdr.detectChanges();
+
+    // UPDATE
+    if (this.editandoId !== null) {
+      const id = this.editandoId;
+
+      this.reservasService.actualizar(id, payload as any)
+        .pipe(finalize(() => {
+          this.saving = false;
+          this.cdr.detectChanges();
+        }))
+        .subscribe({
+          next: (resp) => {
+            // ✅ aquí se arregla el “no se ve el cambio”
+            this.reservas = this.reservas.map((x) => (x.id === id ? resp : x));
+            this.rebuildVM();
+            this.limpiar();
+            this.cdr.detectChanges();
+          },
+          error: (e) => console.error(e),
+        });
+
       return;
     }
 
-    this.saving = true;
-    this.reservasService
-      .crear(payload)
-      .pipe(
-        finalize(() => {
-          this.saving = false;
-          this.zone.run(() => this.cdr.detectChanges());
-        })
-      )
+    // CREATE
+    this.reservasService.crear(payload as any)
+      .pipe(finalize(() => {
+        this.saving = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
-        next: () => {
+        next: (resp) => {
+          this.reservas = [resp, ...this.reservas];
+          this.rebuildVM();
           this.limpiar();
-          this.cargarReservas(); // ✅ refresca tabla
+          this.cdr.detectChanges();
         },
         error: (e) => console.error(e),
       });
   }
 
-  // ✅ Confirmar INSTANTÁNEO (optimista + repinta)
+  // ==========================
+  // ACCIONES
+  // ==========================
   confirmar(r: Reserva) {
-    this.confirmandoId = r.id;
+    this.accionandoId = r.id;
 
-    const prevEstado = r.estado;
-    const actualizado: Reserva = { ...r, estado: 'confirmada' };
-
-    // ✅ actualiza arrays (repinta instantáneo)
-    this.reservas = this.reservas.map(x => x.id === r.id ? actualizado : x);
-    this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? actualizado : x);
-    this.zone.run(() => this.cdr.detectChanges());
-
-    this.reservasService
-      .confirmar(r.id)
-      .pipe(
-        finalize(() => {
-          this.confirmandoId = null;
-          this.zone.run(() => this.cdr.detectChanges());
-        })
-      )
+    this.reservasService.confirmar(r.id)
+      .pipe(finalize(() => {
+        this.accionandoId = null;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (resp) => {
-          if (resp?.estado) {
-            const finalR: Reserva = { ...actualizado, estado: resp.estado };
-            this.reservas = this.reservas.map(x => x.id === r.id ? finalR : x);
-            this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? finalR : x);
-            this.zone.run(() => this.cdr.detectChanges());
-          }
+          this.reservas = this.reservas.map((x) => (x.id === r.id ? resp : x));
+          this.rebuildVM();
+          this.cdr.detectChanges();
         },
-        error: (e) => {
-          console.error(e);
-          const rollback: Reserva = { ...actualizado, estado: prevEstado };
-          this.reservas = this.reservas.map(x => x.id === r.id ? rollback : x);
-          this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? rollback : x);
-          this.zone.run(() => this.cdr.detectChanges());
-        },
+        error: (e) => console.error(e),
       });
   }
 
-  // ✅ Cancelar INSTANTÁNEO (optimista + repinta)
   cancelar(r: Reserva) {
-    this.cancelandoId = r.id;
+    this.accionandoId = r.id;
 
-    const prevEstado = r.estado;
-    const actualizado: Reserva = { ...r, estado: 'cancelada' };
-
-    this.reservas = this.reservas.map(x => x.id === r.id ? actualizado : x);
-    this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? actualizado : x);
-    this.zone.run(() => this.cdr.detectChanges());
-
-    this.reservasService
-      .cancelar(r.id)
-      .pipe(
-        finalize(() => {
-          this.cancelandoId = null;
-          this.zone.run(() => this.cdr.detectChanges());
-        })
-      )
+    this.reservasService.cancelar(r.id)
+      .pipe(finalize(() => {
+        this.accionandoId = null;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (resp) => {
-          if (resp?.estado) {
-            const finalR: Reserva = { ...actualizado, estado: resp.estado };
-            this.reservas = this.reservas.map(x => x.id === r.id ? finalR : x);
-            this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? finalR : x);
-            this.zone.run(() => this.cdr.detectChanges());
-          }
+          this.reservas = this.reservas.map((x) => (x.id === r.id ? resp : x));
+          this.rebuildVM();
+          this.cdr.detectChanges();
         },
-        error: (e) => {
-          console.error(e);
-          const rollback: Reserva = { ...actualizado, estado: prevEstado };
-          this.reservas = this.reservas.map(x => x.id === r.id ? rollback : x);
-          this.reservasFiltradas = this.reservasFiltradas.map(x => x.id === r.id ? rollback : x);
-          this.zone.run(() => this.cdr.detectChanges());
-        },
+        error: (e) => console.error(e),
       });
   }
 
-  trackById(_: number, item: Reserva) {
-    return item.id;
+  eliminar(r: Reserva) {
+    const ok = confirm(`¿Eliminar la reserva #${r.id}?`);
+    if (!ok) return;
+
+    this.deletingId = r.id;
+
+    this.reservasService.eliminar(r.id)
+      .pipe(finalize(() => {
+        this.deletingId = null;
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: () => {
+          // ✅ aquí se arregla el “no se elimina visualmente”
+          this.reservas = this.reservas.filter((x) => x.id !== r.id);
+          this.rebuildVM();
+          this.cdr.detectChanges();
+        },
+        error: (e) => console.error(e),
+      });
   }
 
-  badgeEstado(estado: string) {
-    const s = (estado ?? '').toLowerCase();
-    if (s.includes('confirm')) return 'srh-b-ok';
-    if (s.includes('cancel')) return 'srh-b-busy';
-    return 'srh-b-warn';
+  // ==========================
+  // HELPERS
+  // ==========================
+  private nombreCliente(id: number) {
+    const c = this.clientes.find((x) => x.id === id);
+    return c ? c.nombre : `Cliente #${id}`;
+  }
+
+  private labelHabitacion(id: number) {
+    const h = this.habitaciones.find((x) => x.id === id);
+    if (!h) return `Hab #${id}`;
+    return String(h.numero ?? h.id);
   }
 }

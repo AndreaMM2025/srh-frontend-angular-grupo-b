@@ -1,25 +1,34 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Reserva } from '../models/reserva';
 
 @Injectable({ providedIn: 'root' })
 export class ReservasService {
   private http = inject(HttpClient);
-  private API_URL = 'http://localhost:8000/api/reservas';
+  private baseUrl = 'http://127.0.0.1:8000/api/reservas';
 
-  listar() {
-    return this.http.get<Reserva[]>(`${this.API_URL}/`);
+  listar(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.baseUrl}/`);
   }
 
-  crear(payload: Omit<Reserva, 'id' | 'estado'> & Partial<Pick<Reserva, 'estado'>>) {
-    return this.http.post<Reserva>(`${this.API_URL}/`, payload);
+  crear(payload: Partial<Reserva>): Observable<Reserva> {
+    return this.http.post<Reserva>(`${this.baseUrl}/`, payload);
   }
 
-  confirmar(id: number) {
-    return this.http.put<Reserva>(`${this.API_URL}/${id}/confirmar`, {});
+  actualizar(id: number, payload: Partial<Reserva>): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.baseUrl}/${id}`, payload);
   }
 
-  cancelar(id: number) {
-    return this.http.put<Reserva>(`${this.API_URL}/${id}/cancelar`, {});
+  eliminar(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  confirmar(id: number): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.baseUrl}/${id}/confirmar`, {});
+  }
+
+  cancelar(id: number): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.baseUrl}/${id}/cancelar`, {});
   }
 }
