@@ -1,0 +1,32 @@
+<h2>Clientes</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" style="display:grid; gap:8px; max-width:520px;">
+  <input placeholder="Nombre" formControlName="nombre" />
+  <input placeholder="Identificación" formControlName="identificacion" />
+  <input placeholder="Teléfono" formControlName="telefono" />
+  <input placeholder="Correo" formControlName="correo" />
+  <input placeholder="Nacionalidad" formControlName="nacionalidad" />
+  <button type="submit">Guardar</button>
+</form>
+
+<hr />
+
+<p *ngIf="loading">Cargando...</p>
+
+<table *ngIf="!loading" border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>ID</th><th>Nombre</th><th>Identificación</th><th>Teléfono</th><th>Correo</th><th>Nacionalidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of clientes">
+      <td>{{ c.id }}</td>
+      <td>{{ c.nombre }}</td>
+      <td>{{ c.identificacion }}</td>
+      <td>{{ c.telefono }}</td>
+      <td>{{ c.correo }}</td>
+      <td>{{ c.nacionalidad }}</td>
+    </tr>
+  </tbody>
+</table>
