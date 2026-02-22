@@ -45,12 +45,24 @@ cargar() {
 guardar() {
   if (this.form.invalid) return;
 
-  this.clientesService.crear(this.form.getRawValue() as any).subscribe({
+  const v = this.form.getRawValue() as any;
+
+  const payload = {
+    nombre: (v.nombre ?? '').trim(),
+    identificacion: (v.identificacion ?? '').trim(),
+    telefono: (v.telefono ?? '').trim(),
+    correo: (v.correo ?? '').trim(),
+    nacionalidad: (v.nacionalidad ?? '').trim(),
+  };
+
+  console.log('POST payload:', payload);
+
+  this.clientesService.crear(payload).subscribe({
     next: () => {
       this.form.reset();
       this.cargar();
     },
-    error: (e) => console.error(e),
+    error: (e) => console.error('ERROR POST:', e),
   });
 }
 }

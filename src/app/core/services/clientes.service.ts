@@ -14,7 +14,8 @@ export class ClientesService {
     return this.http.get<Cliente[]>(this.url);
   }
 
-  crear(data: ClienteCreate): Observable<Cliente> {
-    return this.http.post<Cliente>(this.url, data);
-  }
+  crear(data: any) {
+    console.log('ENVIANDO A API:', data);
+    return this.http.post(this.url, data);
+}
 }
