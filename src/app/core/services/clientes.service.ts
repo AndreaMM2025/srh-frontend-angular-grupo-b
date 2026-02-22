@@ -1,21 +1,28 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Cliente, ClienteCreate } from '../models/cliente';
+import { Cliente } from '../models/cliente';
 
 @Injectable({ providedIn: 'root' })
 export class ClientesService {
-  private url = `${environment.apiUrl}/api/clientes/`;
+  private http = inject(HttpClient);
+  private baseUrl = 'http://127.0.0.1:8000/api/clientes';
 
-  constructor(private http: HttpClient) {}
-
-  listar(): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(this.url);
+  listar(q?: string): Observable<Cliente[]> {
+    let params = new HttpParams();
+    if (q && q.trim().length) params = params.set('q', q.trim());
+    return this.http.get<Cliente[]>(`${this.baseUrl}/`, { params });
   }
 
-  crear(data: any) {
-    console.log('ENVIANDO A API:', data);
-    return this.http.post(this.url, data);
-}
+  crear(payload: Omit<Cliente, 'id'>): Observable<Cliente> {
+    return this.http.post<Cliente>(`${this.baseUrl}/`, payload);
+  }
+
+  actualizar(id: number, payload: Omit<Cliente, 'id'>): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.baseUrl}/${id}`, payload);
+  }
+
+  eliminar(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
+  }
 }

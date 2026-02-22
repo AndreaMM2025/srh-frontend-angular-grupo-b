@@ -1,75 +1,144 @@
-<div class="row g-3">
-  <!-- Formulario -->
-  <div class="col-12 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <div class="d-flex align-items-center justify-content-between">
-          <h2 class="h6 mb-0 fw-bold">Clientes</h2>
-          <span class="badge text-bg-primary">Nuevo</span>
+<div class="clientes-page py-4">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+
+      <!-- FORM -->
+      <div class="col-12 col-lg-4">
+        <div class="card srh-card shadow-lg">
+          <div class="card-header srh-head d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="srh-ico">👤</span>
+              <strong>Clientes</strong>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+              <span class="badge rounded-pill text-bg-primary">
+                {{ editandoId ? 'Editando' : 'Nuevo' }}
+              </span>
+              <button type="button" class="btn btn-sm btn-outline-light" (click)="limpiar()">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
+              <div>
+                <label class="form-label fw-bold">Nombre</label>
+                <input class="form-control srh-input" placeholder="Ej: Juan Pérez" formControlName="nombre" />
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Identificación</label>
+                <input class="form-control srh-input" placeholder="Ej: 0928457348" formControlName="identificacion" />
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Teléfono</label>
+                <input class="form-control srh-input" placeholder="Ej: 0998347123" formControlName="telefono" />
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Correo</label>
+                <input class="form-control srh-input" placeholder="Ej: correo@dominio.com" formControlName="correo" />
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Nacionalidad</label>
+                <input class="form-control srh-input" placeholder="Ej: Ecuatoriana" formControlName="nacionalidad" />
+              </div>
+
+              <button class="btn srh-btn-save" type="submit" [disabled]="form.invalid">
+                {{ editandoId ? 'Actualizar' : 'Guardar' }}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
-      <div class="card-body">
-        <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-2">
-          <input class="form-control" placeholder="Nombre" formControlName="nombre" />
-          <input class="form-control" placeholder="Identificación" formControlName="identificacion" />
-          <input class="form-control" placeholder="Teléfono" formControlName="telefono" />
-          <input class="form-control" placeholder="Correo" formControlName="correo" />
-          <input class="form-control" placeholder="Nacionalidad" formControlName="nacionalidad" />
+      <!-- LISTADO -->
+      <div class="col-12 col-lg-8">
+        <div class="card srh-card shadow-lg">
+          <div class="card-header srh-head d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="srh-ico">📋</span>
+              <strong>Listado</strong>
+            </div>
 
-          <button class="btn btn-primary mt-2" type="submit" [disabled]="form.invalid">
-            Guardar
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="srh-search">
+                <span class="srh-search-ico">🔎</span>
+                <input
+                  #q
+                  class="form-control srh-search-input"
+                  placeholder="Buscar por nombre, cédula, correo..."
+                  (input)="onBuscar(q.value)"
+                />
+              </div>
 
-  <!-- Tabla -->
-  <div class="col-12 col-lg-8">
-    <div class="card shadow-sm">
-      <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <h2 class="h6 mb-0 fw-bold">Listado</h2>
-        <button class="btn btn-outline-secondary btn-sm" (click)="cargar()">
-          Recargar
-        </button>
-      </div>
+              <button class="btn srh-btn-reload" type="button" (click)="cargar()">
+                Recargar
+              </button>
+            </div>
+          </div>
 
-      <div class="card-body p-0">
-        <div *ngIf="loading" class="p-3 text-muted">Cargando...</div>
+          <div class="card-body p-0">
+            <div *ngIf="loading" class="p-4 text-center text-muted">
+              Cargando...
+            </div>
 
-        <div class="table-responsive" *ngIf="!loading">
-          <table class="table table-striped table-hover mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Identificación</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Nacionalidad</th>
-              </tr>
-            </thead>
+            <div class="table-responsive" *ngIf="!loading">
+              <table class="table srh-table mb-0">
+                <thead>
+                  <tr>
+                    <th style="width:60px">ID</th>
+                    <th>Nombre</th>
+                    <th>Identificación</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Nacionalidad</th>
+                    <th style="width:220px" class="text-center">Acción</th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              <tr *ngFor="let c of clientes">
-                <td>{{ c.id }}</td>
-                <td class="fw-semibold">{{ c.nombre }}</td>
-                <td>{{ c.identificacion }}</td>
-                <td>{{ c.telefono }}</td>
-                <td>{{ c.correo }}</td>
-                <td>{{ c.nacionalidad }}</td>
-              </tr>
+                <tbody>
+                  <tr *ngFor="let c of clientesFiltrados">
+                    <td class="fw-bold">{{ c.id }}</td>
+                    <td class="fw-semibold">{{ c.nombre }}</td>
+                    <td>{{ c.identificacion }}</td>
+                    <td>{{ c.telefono }}</td>
+                    <td>{{ c.correo }}</td>
+                    <td>{{ c.nacionalidad }}</td>
 
-              <tr *ngIf="clientes.length === 0">
-                <td colspan="6" class="text-center text-muted py-4">
-                  No hay clientes registrados.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" (click)="editar(c)">Editar</button>
+                        <button class="btn btn-outline-danger" (click)="eliminar(c)">Eliminar</button>
+
+                        <!-- botones que llevan a módulos -->
+                        <a class="btn btn-outline-success" [routerLink]="['/habitaciones']" [queryParams]="{ clienteId: c.id }">
+                          Habitaciones
+                        </a>
+                        <a class="btn btn-outline-dark" [routerLink]="['/reservas']" [queryParams]="{ clienteId: c.id }">
+                          Reservas
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="clientesFiltrados.length === 0">
+                    <td colspan="7" class="text-center text-muted py-4">
+                      No hay resultados.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

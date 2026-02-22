@@ -1,0 +1,99 @@
+.clientes-page {
+  min-height: calc(100vh - 120px);
+  padding-bottom: 2rem;
+
+  background: linear-gradient(120deg, #efe9ff, #e7f7ff, #fce7f3);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease-in-out infinite;
+}
+
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.srh-card {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.srh-head {
+  color: #0b1b2b;
+  background: linear-gradient(90deg, #35d3ff, #6b5bff);
+  font-weight: 800;
+  padding: 14px 16px;
+}
+
+.srh-ico { font-size: 18px; }
+
+.srh-input {
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+.srh-btn-save {
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(90deg, #3b82f6, #7c3aed);
+}
+
+.srh-btn-reload {
+  border: 0;
+  border-radius: 12px;
+  font-weight: 800;
+  color: white;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, #ff4d8d, #7c3aed);
+}
+
+.srh-search {
+  position: relative;
+  width: 300px;
+}
+
+.srh-search-ico {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .75;
+}
+
+.srh-search-input {
+  padding-left: 34px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.srh-table {
+  font-size: 13px;
+}
+
+.srh-table thead th {
+  background: linear-gradient(90deg, #4f46e5, #2563eb);
+  color: #fff;
+  border: 0;
+  padding: 12px;
+}
+
+.srh-table tbody td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+/* Tabla pro */
+.srh-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #fff;
+  font-weight: 900;
+  border-bottom: 0;
+
+  background: linear-gradient(90deg, #2d7bff, #7a5cff);
+}
