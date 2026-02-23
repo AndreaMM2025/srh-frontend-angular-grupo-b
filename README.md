@@ -53,7 +53,7 @@ Desarrollar un sistema web integral para la gestión de reservas de un hotel, pe
 
 ---
 
-## 🛠️ TECNOLOGÍAS UTILIZADAS
+## TECNOLOGÍAS UTILIZADAS
 
 ### Backend
 | Tecnología | Versión | Propósito |
@@ -91,58 +91,6 @@ npm --version
 npm install -g @angular/cli
 
 ---
-
-## ESTRUCTURA DEL PROYECTO
-SRH-Hotel/
-│
-├──  backend/
-│   ├── app/
-│   │   ├── main.py                 # Punto de entrada FastAPI
-│   │   ├── db/
-│   │   │   └── memory_db.py        # Base de datos en memoria
-│   │   ├── models/                 # Modelos Pydantic
-│   │   ├── schemas/                # Esquemas de validación
-│   │   └── routers/                # Endpoints API
-│   │       ├── clientes.py
-│   │       ├── habitaciones.py
-│   │       ├── reservas.py
-│   │       ├── facturas.py
-│   │       ├── pagos.py
-│   │       ├── usuarios.py
-│   │       └── reportes.py
-│   ├── requirements.txt            # Dependencias Python
-│   └── README.md
-│
-├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── core/
-│   │   │   │   ├── models/         # Interfaces TypeScript
-│   │   │   │   └── services/       # Servicios HTTP
-│   │   │   ├── pages/              # Componentes por página
-│   │   │   │   ├── home/
-│   │   │   │   ├── clientes/
-│   │   │   │   ├── habitaciones/
-│   │   │   │   ├── reservas/
-│   │   │   │   ├── facturas/
-│   │   │   │   ├── pagos/
-│   │   │   │   ├── usuarios/
-│   │   │   │   └── reportes/
-│   │   │   ├── app.component.ts
-│   │   │   ├── app.routes.ts
-│   │   │   └── app.config.ts
-│   │   ├── assets/
-│   │   ├── index.html
-│   │   └── main.ts
-│   ├── angular.json
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── README.md
-│
-├── .gitignore
-├── README.md (este archivo)
-└── LICENSE
- ---
 
  ## INSTALACIÓN Y CONFIGURACIÓN
 
@@ -350,3 +298,46 @@ git pull origin main
 - [ ] README actualizado si hay nuevos comandos
 - [ ] Comentarios en código complejo
 - [ ] Endpoints documentados en Swagger
+
+---
+
+ENDPOINTS DE LA API
+
+Base URL:
+   http://127.0.0.1:8000/api
+
+Módulos Disponibles:
+
+┌────────────────┬──────────────────┬────────────────────────┬─────────────────────────────────┐
+│ Módulo         │ Endpoint Base    │ Métodos                │ Descripción                     │
+├────────────────┼──────────────────┼────────────────────────┼─────────────────────────────────┤
+│ Clientes       │ /clientes        │ GET, POST, PUT, DELETE │ CRUD de clientes                │
+│ Habitaciones   │ /habitaciones    │ GET, POST, PUT, DELETE │ Gestión de habitaciones         │
+│ Reservas       │ /reservas        │ GET, POST, PUT, DELETE │ Crear y consultar reservas      │
+│ Facturas       │ /facturas        │ GET, POST, PUT, DELETE │ Generación de facturas          │
+│ Pagos          │ /pagos           │ GET, POST, PUT, DELETE │ Registro de pagos               │
+│ Usuarios       │ /usuarios        │ GET, POST, PUT, DELETE │ Administración de usuarios      │
+│ Reportes       │ /reportes        │ GET, DELETE            │ Consultas y exportación         │
+└────────────────┴──────────────────┴────────────────────────┴─────────────────────────────────┘
+
+Documentación Interactiva:
+   Swagger UI: http://127.0.0.1:8000/docs
+   ReDoc:      http://127.0.0.1:8000/redoc
+
+Ejemplo de Petición con cURL:
+
+   # Obtener lista de clientes
+   curl http://127.0.0.1:8000/api/clientes
+
+   # Crear nuevo cliente
+   curl -X POST http://127.0.0.1:8000/api/clientes \
+     -H "Content-Type: application/json" \
+     -d '{"nombre": "Juan Pérez", "identificacion": "0987654321", "telefono": "0991234567", "correo": "juan@email.com", "nacionalidad": "Ecuatoriana"}'
+
+   # Actualizar cliente (PUT)
+   curl -X PUT http://127.0.0.1:8000/api/clientes/1 \
+     -H "Content-Type: application/json" \
+     -d '{"nombre": "Juan Pérez Actualizado"}'
+
+   # Eliminar cliente (DELETE)
+   curl -X DELETE http://127.0.0.1:8000/api/clientes/1
