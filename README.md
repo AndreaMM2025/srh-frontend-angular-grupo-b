@@ -340,3 +340,60 @@ Ejemplo de Petición con cURL:
 
    # Eliminar cliente (DELETE)
    curl -X DELETE http://127.0.0.1:8000/api/clientes/1
+
+   ----
+   ## Conclusión
+   ### Logros del Proyecto
+
+El **Sistema de Reservas de Hoteles (SRH)** representa una solución completa y funcional para la gestión hotelera, desarrollada con tecnologías modernas y mejores prácticas de la industria del software.
+
+### Aspectos Técnicos Destacados
+
+1. **Arquitectura Robusta**: 
+   - Separación clara entre backend (FastAPI) y frontend (Angular)
+   - API RESTful bien documentada con Swagger UI
+   - Componentes modulares y reutilizables
+
+2. **Tecnologías de Vanguardia**:
+   - **Backend**: FastAPI ofrece alto rendimiento y validación automática de datos
+   - **Frontend**: Angular 17 con componentes standalone y diseño responsive
+   - **Comunicación**: HTTP/JSON entre frontend y backend
+
+3. **Funcionalidades Completas**:
+   - CRUD completo para todos los módulos (Clientes, Habitaciones, Reservas, Facturas, Pagos, Usuarios)
+   - Sistema de reportes con exportación a TXT y PDF
+   - Filtros por fechas para análisis de datos
+   - Validaciones de datos en frontend y backend
+
+### Trabajo en Equipo
+
+- **Colaboración efectiva** mediante Git y GitHub
+- **Distribución de tareas** por módulos especializados
+- **Commits descriptivos** siguiendo convenciones
+- **Code reviews** entre compañeros
+- **Documentación compartida** y actualizada
+
+### 🔹 Aprendizajes Obtenidos
+
+Desarrollo full stack con Python/FastAPI y Angular  
+Implementación de API RESTful con documentación automática  
+Gestión de estado y servicios en Angular  
+Control de versiones con Git en equipo  
+Metodologías ágiles y trabajo colaborativo  
+Importancia de la documentación técnica
+
+### Mejoras Futuras
+
+El sistema está diseñado para ser escalable y puede mejorar en:
+
+- **Base de datos**: Migrar de memoria a PostgreSQL/MySQL para persistencia
+- **Autenticación**: Agregar login con JWT y roles de usuario
+- **Responsive**: Mejorar adaptación a dispositivos móviles
+- **Testing**: Implementar pruebas unitarias y de integración
+- **Internacionalización**: Soporte para múltiples idiomas
+- **Dashboard**: Gráficos y estadísticas visuales avanzadas
+- **Notificaciones**: Alertas en tiempo real
+
+### Reflexión Final
+
+Este proyecto demuestra la capacidad del equipo para desarrollar una aplicación web completa, integrando frontend y backend, trabajando de manera colaborativa y aplicando los conocimientos adquiridos en la materia de Ingeniería de Software. La arquitectura modular y la documentación detallada facilitan el mantenimiento y la escalabilidad futura del sistema.
