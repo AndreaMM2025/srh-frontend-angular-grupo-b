@@ -307,7 +307,7 @@ Base URL:
    http://127.0.0.1:8000/api
 
 
-### 🔹 Módulos Disponibles
+### Módulos Disponibles
 
 | Módulo | Endpoint Base | Métodos | Descripción |
 |--------|--------------|---------|-------------|
@@ -319,13 +319,9 @@ Base URL:
 | Usuarios | `/usuarios` | GET, POST, PUT, DELETE | Administración de usuarios |
 | Reportes | `/reportes` | GET, DELETE | Consultas y exportación |
 
-### 🔹 Documentación Interactiva
-- 🔗 **Swagger UI:** http://127.0.0.1:8000/docs
-- 🔗 **ReDoc:** http://127.0.0.1:8000/redoc
-
-Documentación Interactiva:
-   Swagger UI: http://127.0.0.1:8000/docs
-   ReDoc:      http://127.0.0.1:8000/redoc
+### Documentación Interactiva
+- **Swagger UI:** http://127.0.0.1:8000/docs
+- **ReDoc:** http://127.0.0.1:8000/redoc
 
 Ejemplo de Petición con cURL:
 
