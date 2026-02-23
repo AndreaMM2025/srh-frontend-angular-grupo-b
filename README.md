@@ -301,24 +301,27 @@ git pull origin main
 
 ---
 
-ENDPOINTS DE LA API
+## ENDPOINTS DE LA API
 
 Base URL:
    http://127.0.0.1:8000/api
 
-Módulos Disponibles:
 
-┌────────────────┬──────────────────┬────────────────────────┬─────────────────────────────────┐
-│ Módulo         │ Endpoint Base    │ Métodos                │ Descripción                     │
-├────────────────┼──────────────────┼────────────────────────┼─────────────────────────────────┤
-│ Clientes       │ /clientes        │ GET, POST, PUT, DELETE │ CRUD de clientes                │
-│ Habitaciones   │ /habitaciones    │ GET, POST, PUT, DELETE │ Gestión de habitaciones         │
-│ Reservas       │ /reservas        │ GET, POST, PUT, DELETE │ Crear y consultar reservas      │
-│ Facturas       │ /facturas        │ GET, POST, PUT, DELETE │ Generación de facturas          │
-│ Pagos          │ /pagos           │ GET, POST, PUT, DELETE │ Registro de pagos               │
-│ Usuarios       │ /usuarios        │ GET, POST, PUT, DELETE │ Administración de usuarios      │
-│ Reportes       │ /reportes        │ GET, DELETE            │ Consultas y exportación         │
-└────────────────┴──────────────────┴────────────────────────┴─────────────────────────────────┘
+### 🔹 Módulos Disponibles
+
+| Módulo | Endpoint Base | Métodos | Descripción |
+|--------|--------------|---------|-------------|
+| Clientes | `/clientes` | GET, POST, PUT, DELETE | CRUD de clientes |
+| Habitaciones | `/habitaciones` | GET, POST, PUT, DELETE | Gestión de habitaciones |
+| Reservas | `/reservas` | GET, POST, PUT, DELETE | Crear y consultar reservas |
+| Facturas | `/facturas` | GET, POST, PUT, DELETE | Generación de facturas |
+| Pagos | `/pagos` | GET, POST, PUT, DELETE | Registro de pagos |
+| Usuarios | `/usuarios` | GET, POST, PUT, DELETE | Administración de usuarios |
+| Reportes | `/reportes` | GET, DELETE | Consultas y exportación |
+
+### 🔹 Documentación Interactiva
+- 🔗 **Swagger UI:** http://127.0.0.1:8000/docs
+- 🔗 **ReDoc:** http://127.0.0.1:8000/redoc
 
 Documentación Interactiva:
    Swagger UI: http://127.0.0.1:8000/docs
