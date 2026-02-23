@@ -373,7 +373,7 @@ El **Sistema de Reservas de Hoteles (SRH)** representa una solución completa y 
 - **Code reviews** entre compañeros
 - **Documentación compartida** y actualizada
 
-### 🔹 Aprendizajes Obtenidos
+### Aprendizajes Obtenidos
 
 Desarrollo full stack con Python/FastAPI y Angular  
 Implementación de API RESTful con documentación automática  
