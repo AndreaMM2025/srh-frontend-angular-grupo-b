@@ -1,0 +1,204 @@
+<div class="pagos-page py-4">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+
+      <!-- ===================== FORM ===================== -->
+      <div class="col-12 col-lg-4">
+        <div class="card srh-card shadow-lg">
+          <div class="card-header srh-head d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="srh-ico fs-1">💳</span>
+              <strong class="fs-3">Pagos</strong>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center">
+              <span class="badge rounded-pill text-bg-primary fs-6">
+                {{ editandoId !== null ? 'Editando' : 'Nuevo' }}
+              </span>
+              <button type="button" class="btn btn-sm btn-outline-light" (click)="limpiar()">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
+
+              <div>
+                <label class="form-label fw-bold fs-6">Factura</label>
+                <select class="form-select form-select-lg" formControlName="factura_id">
+                  <option [ngValue]="null">Seleccione...</option>
+                  <option *ngFor="let f of facturas" [ngValue]="f.id">
+                    {{ mostrarFacturaEnSelect(f) }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label fw-bold fs-6">Monto (Subtotal)</label>
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" formControlName="monto" step="0.01" min="0.01" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label fw-bold text-muted fs-6">IVA (15%)</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control" [value]="form.get('iva')?.value | number:'1.2-2'" readonly />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-bold text-success fs-6">Total</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-success text-white">$</span>
+                    <input type="text" class="form-control fw-bold text-success" [value]="form.get('total')?.value | number:'1.2-2'" readonly />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label fw-bold fs-6">Método</label>
+                <select class="form-select form-select-lg" formControlName="metodo">
+                  <option *ngFor="let m of metodos" [value]="m.value">{{ m.label }}</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label fw-bold fs-6">Fecha</label>
+                <input type="date" class="form-control form-control-lg" formControlName="fecha" />
+              </div>
+
+              <button class="btn srh-btn-save btn-lg" type="submit" [disabled]="form.invalid || saving">
+                <i class="bi bi-save2-fill me-2"></i>
+                {{ editandoId !== null ? 'Actualizar' : 'Guardar' }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== LISTADO ===================== -->
+      <div class="col-12 col-lg-8">
+        <div class="card srh-card shadow-lg">
+          <div class="card-header srh-head d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="srh-ico fs-1" >📋</span>
+              <strong class="fs-5">Listado de Pagos</strong>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <div class="srh-search">
+                <span class="srh-search-ico fs-5">🔎</span>
+                <input #q class="form-control srh-search-input"
+                       placeholder="Buscar por cliente, factura, monto..."
+                       (input)="onBuscar(q.value)" />
+              </div>
+
+              <button class="btn srh-btn-reload" type="button" (click)="cargar()">
+                <i class="bi bi-arrow-clockwise me-2"></i> Recargar
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <div *ngIf="loading" class="p-4 text-center text-muted">
+              <div class="spinner-border text-primary" role="status"></div>
+              <span class="ms-2">Cargando pagos...</span>
+            </div>
+
+            <div class="table-responsive" *ngIf="!loading">
+              <table class="table srh-table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width:60px">ID</th>
+                    <th>Factura / Cliente</th>
+                    <th class="text-end" style="width:110px">Subtotal</th>
+                    <th class="text-end" style="width:100px">IVA 15%</th>
+                    <th class="text-end" style="width:110px">Total</th>
+                    <th class="text-center" style="width:130px">Método</th>
+                    <th class="text-center" style="width:110px">Fecha</th>
+                    <th class="text-center" style="width:100px">Estado</th>
+                    <th class="text-center" style="width:280px">Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let p of pagosFiltrados; trackBy: trackById">
+                    <td class="fw-bold text-center fs-5">{{ p.id }}</td>
+                    
+                    <td>
+                      <div class="d-flex flex-column">
+                        <span class="fw-semibold fs-6">{{ facturaConCliente(p.factura_id) }}</span>
+                      </div>
+                    </td>
+                    
+                    <td class="text-end text-muted fs-6">{{ p.monto | currency:'USD':'symbol':'1.2-2' }}</td>
+                    <td class="text-end text-info fw-bold fs-6">{{ getIVA(p) | currency:'USD':'symbol':'1.2-2' }}</td>
+                    <td class="text-end fw-bold text-success fs-6">{{ getTotal(p) | currency:'USD':'symbol':'1.2-2' }}</td>
+                    
+                    <td class="text-center">
+                      <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle fs-6">
+                        {{ metodoLabel(p.metodo) }}
+                      </span>
+                    </td>
+                    <td class="text-center fs-6">{{ p.fecha }}</td>
+                    
+                    <td class="text-center">
+                      <span class="badge fs-6"
+                            [class.bg-success]="!p.estado || p.estado === 'aprobado' || p.estado === ''"
+                            [class.bg-danger]="p.estado === 'anulado'"
+                            [class.bg-secondary]="p.estado && p.estado !== 'aprobado' && p.estado !== 'anulado' && p.estado !== ''">
+                        {{ p.estado || 'aprobado' }}
+                      </span>
+                    </td>
+
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-txt" 
+                                (click)="descargarTXT(p)"
+                                title="Descargar TXT">
+                          <i class="bi bi-file-earmark-text"></i> TXT
+                        </button>
+                        
+                        <button class="btn-action btn-pdf" 
+                                (click)="descargarPDF(p)"
+                                title="Descargar PDF">
+                          <i class="bi bi-file-earmark-pdf"></i> PDF
+                        </button>
+                        
+                        <button class="btn-action btn-edit" 
+                                (click)="editar(p)"
+                                title="Editar">
+                          <i class="bi bi-pencil-square"></i> Editar
+                        </button>
+                        
+                        <button class="btn-action btn-delete" 
+                                (click)="eliminar(p)"
+                                title="Eliminar"
+                                [disabled]="deletingId === p.id">
+                          <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="pagosFiltrados.length === 0">
+                    <td colspan="9" class="text-center text-muted py-5">
+                      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                      <span class="fs-5">No hay pagos registrados.</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

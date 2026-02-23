@@ -2,6 +2,15 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Factura } from '../models/factura';
 
+export interface FacturaLite {
+  id: number;
+  cliente_id?: number;
+  reserva_id?: number;
+  total?: number;
+  fecha?: string;
+  estado?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class FacturasService {
   private http = inject(HttpClient);

@@ -119,68 +119,77 @@
                 <table class="table srh-table align-middle mb-0 facturas-table">
                   <thead>
                     <tr>
-                      <th class="col-id text-center">ID</th>
-                      <th class="col-cliente">Cliente</th>
-                      <th class="col-reserva">Reserva</th>
-                      <th class="col-total text-end">Total</th>
-                      <th class="col-fecha text-center">Fecha</th>
-                      <th class="col-estado text-center">Estado</th>
-                      <th class="col-acciones text-center">Acciones</th>
+                      <th class="text-center" style="width:50px">ID</th>
+                      <th style="width:150px">Cliente</th>
+                      <th style="width:200px">Reserva</th>
+                      <th class="text-end" style="width:90px">Total</th>
+                      <th class="text-center" style="width:100px">Fecha</th>
+                      <th class="text-center" style="width:90px">Estado</th>
+                      <th class="text-center" style="width:320px">Acciones</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    <!-- OJO: aquí usamos facturasVMFiltradas -->
                     <tr *ngFor="let f of facturasVMFiltradas; trackBy: trackById">
-                      <td class="fw-bold text-center col-id">{{ f.id }}</td>
+                      <td class="fw-bold text-center fs-5">{{ f.id }}</td>
 
-                      <td class="fw-semibold col-cliente">
-                        <span class="text-truncate d-inline-block w-100">{{ f.clienteNombre }}</span>
+                      <td>
+                        <div class="d-flex flex-column">
+                          <span class="fw-semibold fs-6">{{ f.clienteNombre }}</span>
+                        </div>
                       </td>
 
-                      <td class="fw-semibold col-reserva">
-                        <span class="text-truncate d-inline-block w-100">{{ f.reservaLabel }}</span>
+                      <td>
+                        <span class="fs-6">{{ f.reservaLabel }}</span>
                       </td>
 
-                      <td class="fw-bold text-end col-total">$ {{ f.total }}</td>
+                      <td class="text-end fw-bold text-success fs-6">${{ f.total | number:'1.2-2' }}</td>
 
-                      <td class="text-center col-fecha">{{ f.fecha }}</td>
+                      <td class="text-center fs-6">{{ f.fecha }}</td>
                       
                       <td class="text-center">
-                        {{ f.estado }}
+                        <span class="badge fs-6"
+                              [class.bg-success]="f.estado === 'emitida'"
+                              [class.bg-danger]="f.estado === 'cancelada'"
+                              [class.bg-warning]="f.estado === 'pendiente'">
+                          {{ f.estado }}
+                        </span>
                       </td>
-                
 
-                      <td class="text-center col-acciones">
-                        <div class="d-flex flex-nowrap gap-2 justify-content-center">
-                          <button class="btn srh-action srh-edit" type="button" (click)="editar(f.raw)">
-                            <i class="bi bi-pencil-square me-1"></i> Editar
+                      <td class="text-center">
+                        <div class="action-buttons">
+                          <button class="btn-action btn-txt" 
+                                  (click)="descargarTxt(f.raw)"
+                                  title="Descargar TXT">
+                            <i class="bi bi-file-earmark-text"></i> TXT
                           </button>
 
-                          <button
-                            class="btn srh-action srh-del"
-                            type="button"
-                            (click)="eliminar(f.raw)"
-                            [disabled]="deletingId === f.id"
-                          >
-                            <i class="bi bi-trash me-1"></i>
-                            {{ deletingId === f.id ? 'Eliminando...' : 'Eliminar' }}
+                          <button class="btn-action btn-pdf" 
+                                  (click)="imprimirPdf(f.raw)"
+                                  title="Imprimir PDF">
+                            <i class="bi bi-file-earmark-pdf"></i> PDF
                           </button>
 
-                          <button class="btn srh-action srh-edit" type="button" (click)="descargarTxt(f.raw)">
-                            <i class="bi bi-file-earmark-text me-1"></i> TXT
+                          <button class="btn-action btn-edit" 
+                                  (click)="editar(f.raw)"
+                                  title="Editar">
+                            <i class="bi bi-pencil-square"></i> Editar
                           </button>
 
-                          <button class="btn srh-action srh-edit" type="button" (click)="imprimirPdf(f.raw)">
-                            <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                          <button class="btn-action btn-delete" 
+                                  (click)="eliminar(f.raw)"
+                                  title="Eliminar"
+                                  [disabled]="deletingId === f.id">
+                            <i class="bi bi-trash"></i> Eliminar
                           </button>
                         </div>
                       </td>
                     </tr>
 
                     <tr *ngIf="facturasVMFiltradas.length === 0">
-                      <td colspan="7" class="text-center text-muted py-4">
-                        No hay facturas registradas.
+                      <td colspan="7" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                        <span class="fs-5">No hay facturas registradas.</span>
                       </td>
                     </tr>
 
