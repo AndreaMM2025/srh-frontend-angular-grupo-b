@@ -1,4 +1,6 @@
 <div class="srh-shell">
+
+  <!-- NAVBAR SIEMPRE -->
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark srh-navbar">
     <div class="container">
       <a class="navbar-brand fw-bold" routerLink="/">GestiónHotelera Pro</a>
@@ -18,11 +20,8 @@
           <li class="nav-item"><a class="nav-link" routerLink="/clientes" routerLinkActive="active">Clientes</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/habitaciones" routerLinkActive="active">Habitaciones</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/reservas" routerLinkActive="active">Reservas</a></li>
-          
-          <!-- ✅ FACTURAS (ANTES DE PAGOS) -->
           <li class="nav-item"><a class="nav-link" routerLink="/facturas" routerLinkActive="active">Facturas</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/pagos" routerLinkActive="active">Pagos</a></li>
-          
           <li class="nav-item"><a class="nav-link" routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/reportes" routerLinkActive="active">Reportes</a></li>
         </ul>
@@ -30,20 +29,24 @@
     </div>
   </nav>
 
-  <header class="bg-light border-bottom">
+  <!-- HEADER SOLO EN INICIO -->
+  <header *ngIf="esInicio" class="bg-light border-bottom">
     <div class="container py-4 text-center"> 
       <h1 class="h3 mb-1 fw-bold">SRH - Sistema de Reservas de Hoteles</h1>
       <p class="text-muted mb-0">Frontend Angular consumiendo servicios FastAPI</p>
     </div>
   </header>
 
+  <!-- CONTENIDO -->
   <main class="container py-4 srh-main">
     <router-outlet></router-outlet>
   </main>
 
+  <!-- FOOTER -->
   <footer class="border-top py-3 srh-footer">
-    <div class="container text-muted small">
+    <div class="container text-muted small text-center">
       © 2026 HOTELERÍA - Grupo B
     </div>
   </footer>
+
 </div>

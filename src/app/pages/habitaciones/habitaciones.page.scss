@@ -1,161 +1,147 @@
+/* ================= CSS COMPLETO HABITACIONES ================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html, body {
+  height: 100%;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  background: #f4f6f9;
+}
+
+/* FONDO */
 .habitaciones-page {
   min-height: calc(100vh - 110px);
   padding-bottom: 2rem;
-
-  background: linear-gradient(120deg, #ab81d7, #326f93, #b76b20, #b8346b);
-  background-size: 300% 300%;
-   animation: bgMove 10s ease-in-out infinite;
+  background: #f4f6f9;
 }
 
-@keyframes bgMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
- 
+/* TARJETAS */
 .srh-card {
-  border: 0;
-  border-radius: 10px;
+  border-radius: 16px;
   overflow: hidden;
+  background: white;
+  box-shadow: 0 10px 30px rgba(221, 218, 218, 0.1);
+  border: 1px solid #e5e7eb;
 }
 
-.srh-header {
-  border: 0;
-  color: #0b1b3a;
-  background: linear-gradient(90deg, #47d7ff, #4e7bff, #8c52ff);
-}
-.srh-search {
-  position: relative;
-  width: 300px;
-}
-
+/* HEADER */
 .srh-head {
-  color: #0b1b2b;
-  background: linear-gradient(90deg, #35d3ff, #6b5bff);
-  font-weight: 800;
-  padding: 14px 14px;
-}
-.srh-badge {
-  background: rgba(255,255,255,.20);
-  border: 1px solid rgba(255,255,255,.35);
-  color: #fff;
+  color: #f9fafb;
+  background: linear-gradient(90deg, #a2adc7, #a2adc7);
+  font-weight: 700;
+  padding: 1.25rem 1.5rem;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.srh-btn-primary {
-  border: 0;
-  border-radius: 14px;
-  padding: 14px 14px;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(90deg, #4e7bff, #8c52ff);
-  box-shadow: 0 10px 25px rgba(78,123,255,.25);
-
-  &:hover {
-    transform: translateY(-1px);
-  }
+/* TEXTO HABITACIONES NEGRO */
+.srh-head strong {
+  color: black !important;
 }
-.srh-ico { font-size: 50px; }
+
+/* ICONOS */
+.srh-ico {
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+
+/* INPUTS */
 .srh-input {
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 14px;
-}
-
-.srh-search-ico {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: .75;
-}
-
-.srh-btn-outline {
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.55);
-  color: #fff;
-  background: rgba(255,255,255,.15);
-}
-
-.srh-btn-reload {
-  border: 0;
-  border-radius: 14px;
-  padding: 10px 14px;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(90deg, #ff4fd8, #6a5cff);
-  box-shadow: 0 10px 25px rgba(255,79,216,.20);
-}
-
-.srh-input {
-  border-radius: 14px;
+  border-radius: 10px;
   padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
 }
 
-.srh-search {
-  position: relative;
+/* BOTÓN PRINCIPAL */
+.srh-btn-primary {
+  border: none;
+  border-radius: 10px;
+  padding: 4px px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fbf9f9;
+  background: linear-gradient(135deg, #475b87, #335865);
+  box-shadow: 0 6px 15px rgb(98, 96, 96);
+  transition: all .2s ease;
 }
 
-.srh-search-ico {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: .8;
-  color: #0b1b3a;
+.srh-btn-primary:hover {
+  transform: translateY(-2px);
 }
 
-.srh-search-input {
-  border-radius: 14px;
-  padding: 10px 14px 10px 36px;
-  min-width: 280px;
+/* BOTÓN LIMPIAR - TEXTO Y BORDE NEGRO */
+.srh-btn-outline {
+  background: transparent !important;
+  border: 1px solid #000000 !important; /* Borde negro */
+  color: #000000 !important;            /* Texto negro */
+  border-radius: 999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  padding: 3px 3px !important;
+  transition: all .2s ease;
 }
 
+.srh-btn-outline:hover {
+  background: rgba(0,0,0,0.05) !important;
+}
+
+/* BOTÓN RECARGAR */
+.srh-btn-reload {
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  padding: 10px 18px;
+  background: #a2adc7;
+}
+
+/* TABLA */
 .srh-table {
-  font-size: 12px;
-
-  thead th {
-    color: #fff;
-    font-weight: 900;
-    background: linear-gradient(90deg, #4e7bff, #8c52ff);
-    border: 0;
-    padding: 14px;
-  }
-
-  tbody td {
-    padding: 14px;
-    border-top: 1px solid rgba(0,0,0,.06);
-  }
-
-  tbody tr:hover {
-    background: rgba(140,82,255,.06);
-  }
+  font-size: 0.95rem;
+  width: 100%;
 }
 
-/* badges estado */
-.srh-b-ok { background: #2ecc71; }
-.srh-b-busy { background: #ff5b5b; }
-.srh-b-clean { background: #f1c40f; color: #1b1b1b; }
-.srh-b-warn { background: #ff8c42; }
-
-.srh-action {
-  border-radius: 12px;
-  font-weight: 800;
-  padding: 8px 10px;
+/* CABECERA TABLA */
+.srh-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #000;
+  font-weight: 700;
+  padding: 14px 10px;
+  background: linear-gradient(90deg, #a2adc7, #a2adc7);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
 }
 
-.srh-edit {
-  background: rgba(78,123,255,.10);
-  border: 1px solid rgba(78,123,255,.35);
-  color: #2b4eff;
-}
-
-.srh-del {
-  background: rgba(255,91,91,.10);
-  border: 1px solid rgba(255,91,91,.35);
-  color: #ff3b3b;
-}
-
+/* FILAS */
 .srh-table tbody td {
-  padding: 12px;
+  padding: 14px 10px;
   vertical-align: middle;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+}
+
+.srh-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+/* NUEVO / EDITANDO - SIN FONDO, TEXTO Y BORDE NEGRO */
+.srh-head .badge {
+  background: transparent !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 0.73rem;
+  border-radius: 999px;
+  margin-left: 0.25px;
 }

@@ -1,221 +1,141 @@
-/* ====== SRH Theme ====== */
+/* ===== PALETA SOBRIA PREMIUM HOTEL MARMOL AZUL OSCURO ===== */
 :root{
-  --srh-primary: #445f99;   /* azul */
-  --srh-accent: #7c3aed;    /* morado */
-  --srh-cyan: #06b6d4;      /* cyan */
-  --srh-dark: #0f172a;      /* slate */
+  --primary-dark: #040404;               
+  --accent-copper: #bcb2b2;              
+  --accent-copper-gradient: linear-gradient(45deg, #020202, #fbbf24);
+  --bg-light: #f3f4f6;                    
+  --text-light: #000000;                  
+  --text-dark:  #060606;                   
 }
 
-/* Fondo animado suave */
-body{
-  background: linear-gradient(120deg,
-    rgba(37,99,235,.08),
-    rgba(124,58,237,.08),
-    rgba(6,182,212,.08)
-  );
-  background-size: 200% 200%;
-  animation: srhGradient 10s ease infinite;
-}
-
-@keyframes srhGradient {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.srh-navbar{
-  backdrop-filter: blur(10px);
-  background: rgba(15, 23, 42, 0.92) !important;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-
-.srh-navbar .nav-link{
-  color: rgba(255,255,255,.78);
-  border-radius: 999px;
-  padding: .4rem .75rem;
-  transition: all .2s ease;
-}
-
-.srh-navbar .nav-link:hover{
-  color: #fff;
-  background: rgba(255,255,255,.08);
-}
-
-.srh-navbar .nav-link.active{
-  color: #fff;
-  background: linear-gradient(90deg, rgba(37,99,235,.35), rgba(124,58,237,.35));
-  border: 1px solid rgba(255,255,255,.12);
-}
-
-.srh-card{
-  border: 1px solid rgba(15,23,42,.08);
-  border-radius: 14px;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-  overflow: hidden;
-  padding: 4px;
-}
-
-.srh-card::before{
-  content:"";
-  display:block;
-  height: 4px;
-  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent), var(--srh-cyan));
-}
-
-.srh-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 18px 35px rgba(2, 6, 23, .12);
-  border-color: rgba(37,99,235,.35);
-}
-
-/* Botón con efecto */
-.srh-btn{
-  border-radius: 12px;
-  padding: .55rem .95rem;
-  font-weight: 600;
-  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent));
-  border: none;
-  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-}
-
-.srh-btn:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px rgba(37,99,235,.25);
-  filter: brightness(1.05);
-}
-
-.srh-btn:active{
-  transform: translateY(0px) scale(.98);
-}
-
-/* Animación de entrada suave */
-.srh-fade-in{
-  animation: srhFade .35s ease both;
-}
-
-@keyframes srhFade{
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== HERO / PANEL ===== */
-.srh-hero{
-  position: relative;
-  padding: 16px;
-  border-radius: 18px;
-  border: 1px solid rgba(64, 103, 193, 0.08);
-  background:
-    radial-gradient(900px 300px at 20% 10%, rgba(37,99,235,.18), transparent 60%),
-    radial-gradient(700px 300px at 80% 20%, rgba(124,58,237,.16), transparent 55%),
-    radial-gradient(600px 260px at 40% 90%, rgba(6,182,212,.14), transparent 55%),
-    rgba(255,255,255,.55);
-  backdrop-filter: blur(8px);
-  overflow: hidden;
-}
-
-/* ícono */
-.srh-hero-icon{
-  font-size: 100px;
-  color: #fff;
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 40px;
-  background: linear-gradient(90deg, var(--srh-primary), var(--srh-accent));
-  box-shadow: 0 14px 25px rgba(37,99,235,.18);
-}
-
-.srh-hero::after{
-  content: "🏨";
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  font-size: 120px;
-  opacity: .10;
-  transform: rotate(-8deg);
-  pointer-events: none;
-}
-
-.srh-hero::before{
-  content:"";
-  position:absolute;
-  inset:-60px;
-  background: linear-gradient(120deg,
-    rgba(37,99,235,.10),
-    rgba(124,58,237,.10),
-    rgba(6,182,212,.10)
-  );
-  filter: blur(22px);
-  animation: srhGlow 8s ease-in-out infinite;
-  pointer-events:none;
-}
-
-@keyframes srhGlow{
-  0% { transform: translateX(-2%) translateY(0%); }
-  50%{ transform: translateX(2%) translateY(1%); }
-  100%{ transform: translateX(-2%) translateY(0%); }
-}
-
+/* ===== HTML Y BODY CON FONDO AZUL OSCURO ===== */
 html, body {
   height: 100%;
-  font-family: "Times New Roman", Times, serif !important;
-  font-weight: bold; 
-  font-size: 13px;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  font-weight: bold;
-  font-size: 13px;
-}
-
-main {
-  flex: 1;   
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  font-weight: 500;
-  font-weight: bold;
-  font-size: 15px;
-}
-
-html, body {
-  height: 100%;
-  
-}
-
-body {
   margin: 0;
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-light);
+  /* Fondo gris */
+  background: 
+    radial-gradient(circle at 20% 20%, #dddcdc, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgb(180, 174, 174), transparent 50%),
+    #a2adc7; /* base */
+  background-blend-mode: overlay, overlay;
+  background-attachment: fixed;
 }
 
-/* Contenedor principal de toda la app */
-.srh-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* ===== APP ROOT ===== */
+app-root {
+  display: block;
+  min-height: 100%;
+  padding: 20px;
 }
 
-/* Donde se renderiza el router */
-.srh-main {
-  flex: 1 1 auto;
+/* ===== CONTENEDOR ===== */
+.container{
+  padding: 25px;
+  max-width: 1200px;
+  margin: auto;
 }
 
-/* Footer centrado */
-.srh-footer {
-  text-align: center;
+/* ===== TARJETAS SOBRIAS ===== */
+.card, .srh-panel{
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 4px 12px rgba(255, 252, 252, 0.06);
+  border: none;
+  color: var(--text-dark);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-h1, h2, h3, h4, h5, .navbar-brand {
-  font-weight: 800 !important;
+.card:hover, .srh-panel:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px #ffffff9d;
 }
 
-.card-title,
-.table thead th {
-  font-weight: 800 !important;
+/* ===== PANEL PRINCIPAL ===== */
+.srh-panel{
+  border-left: 5px solid var(--accent-copper);
+}
+
+/* ===== TITULOS ===== */
+h1{
+  font-size: 2.6rem;
+  font-weight: 700;
+}
+h2{
+  font-size: 2.0rem;
+  font-weight: 600;
+}
+h3{
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+h1, h2, h3{
+  color: var(--text-light);
+}
+
+/* ===== COLOR ESPECÍFICO PARA ACCESOS RAPIDOS ===== */
+.accesos-rapidos {
+  color: #ffffff !important;
+}
+
+/* ===== TEXTO ===== */
+p{
+  color: var(--text-light);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ===== TABLAS SOBRIAS ===== */
+table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  color: var(--text-dark);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+th{
+  background: var(--accent-copper-gradient);
+  color: #b1bdd9;
+  padding: 14px;
+  text-align: left;
+}
+
+td{
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover{
+  background: #cfd6f1; /* hover sutil azul claro */
+  transition: background 0.25s ease;
+}
+
+/* ===== BOTONES SOBRIOS ===== */
+button{
+  background: var(--accent-copper-gradient);
+  color: #f9fbff;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 5px 14px rgba(248, 245, 241, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(219,115,18,0.4);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px){
+  .container { padding: 15px; }
+  table, th, td { font-size: 13px; }
+  button { padding: 11px 16px; }
 }

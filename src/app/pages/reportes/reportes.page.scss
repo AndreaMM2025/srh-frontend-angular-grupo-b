@@ -1,62 +1,61 @@
+/* ===== FONDO PROFESIONAL IGUAL CLIENTES ===== */
 .reportes-page {
   min-height: calc(100vh - 110px);
   padding-bottom: 2rem;
-  background: linear-gradient(120deg, #ab81d7, #326f93, #b76b20, #b8346b);
-  background-size: 300% 300%;
-  animation: bgMove 10s ease-in-out infinite;
+  background: #f4f6f9;
 }
 
-@keyframes bgMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* TARJETAS */
 .srh-card {
-  border: 0;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
 }
 
+/* ENCABEZADO */
 .srh-header {
   border: 0;
-  color: #0b1b3a;
-  background: linear-gradient(90deg, #47d7ff, #4e7bff, #8c52ff);
+  color: #000;
+  background: #f9fafb;
   padding: 1.25rem 1.5rem;
+  font-weight: 700;
 }
 
+/* ICONOS */
 .srh-ico {
   font-size: 2.2rem;
   display: inline-block;
   vertical-align: middle;
+  color: #9d9c98;
 }
 
-/* Tabs personalizados */
+/* ================== TABS ================== */
 .nav-tabs {
   border-bottom: 2px solid #dee2e6;
-  
-  .nav-link {
-    border: none;
-    color: #495057;
-    font-weight: 600;
-    padding: 12px 20px;
-    margin-bottom: -2px;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      border-color: transparent;
-      color: #4e7bff;
-    }
-    
-    &.active {
-      color: #4e7bff;
-      background: transparent;
-      border-bottom: 3px solid #4e7bff;
-    }
-  }
 }
 
-/* Cards de estadísticas */
+.nav-tabs .nav-link {
+  border: none;
+  color: #495057;
+  font-weight: 600;
+  padding: 12px 20px;
+  margin-bottom: -2px;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #475b87;
+}
+
+.nav-tabs .nav-link.active {
+  color: #475b87;
+  background: transparent;
+  border-bottom: 3px solid #475b87;
+}
+
+/* ================== CARDS STATS ================== */
 .card.bg-primary,
 .card.bg-success,
 .card.bg-info,
@@ -65,163 +64,116 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
-  
-  &:hover {
-    transform: translateY(-4px);
-  }
-  
-  h5 {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-bottom: 0.5rem;
-  }
-  
-  h2 {
-    font-size: 2rem;
-    font-weight: 800;
-  }
 }
 
-/* Tablas */
-.table {
-  font-size: 0.95rem;
-  
-  thead th {
-    background: linear-gradient(90deg, #4e7bff, #8c52ff);
-    color: #fff;
-    font-weight: 700;
-    border: none;
-    padding: 14px 12px;
-  }
-  
-  tbody td {
-    padding: 12px;
-    vertical-align: middle;
-  }
-  
-  tbody tr:hover {
-    background: rgba(78, 123, 255, 0.05);
-  }
+.card:hover {
+  transform: translateY(-4px);
 }
 
-/* Badges */
+.card h5 {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.card h2 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+/* ================== TABLAS ================== */
+.table thead th {
+  background: #f3f4f6;
+  color: black;
+  font-weight: 700;
+  border: none;
+  padding: 14px 12px;
+}
+
+.table tbody td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* BADGES */
 .badge {
   padding: 6px 12px;
   font-weight: 600;
   border-radius: 8px;
 }
 
-/* Botones */
+/* ================== BOTONES GENERALES ================== */
 .btn {
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 16px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
+  transition: all 0.2s ease;
 }
 
-/* Botón Limpiar Datos */
-.btn-outline-danger {
-  border: 2px solid #fff;
-  color: #fff;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: #fff;
-    color: #dc3545;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-  }
+.btn:hover {
+  transform: translateY(-2px);
 }
 
+/* ===== BOTÓN ACTUALIZAR SIN FONDO ===== */
 .btn-outline-light {
-  border: 2px solid #fff;
-  color: #fff;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: #fff;
-    color: #4e7bff;
-    transform: translateY(-2px);
-  }
+  background: transparent !important;
+  border: 1px solid #475b87 !important;
+  color: #475b87 !important;
 }
 
-/* Responsive */
+.btn-outline-light:hover {
+  background: #f3f4f6 !important;
+}
+
+/* ===== BOTÓN APLICAR FILTROS SIN FONDO ===== */
+.btn-primary {
+  background: transparent !important;
+  border: 1px solid #475b87 !important;
+  color: #475b87 !important;
+}
+
+.btn-primary:hover {
+  background: #f3f4f6 !important;
+}
+
+/* ===== BOTÓN LIMPIAR FILTROS ===== */
+.btn-outline-secondary {
+  border: 1px solid #6c757d !important;
+  color: #6c757d !important;
+  background: #fff !important;
+  font-weight: 700;
+  border-radius: 10px;
+}
+
+.btn-outline-secondary:hover {
+  background: #6c757d !important;
+  color: #fff !important;
+}
+
+/* ===== BOTÓN LIMPIAR DATOS ===== */
+.btn-outline-danger {
+  border: 1px solid #dc3545 !important;
+  color: #dc3545 !important;
+  background: transparent !important;
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545 !important;
+  color: white !important;
+}
+
+/* ================== RESPONSIVE ================== */
 @media (max-width: 768px) {
   .nav-tabs .nav-link {
     padding: 8px 12px;
     font-size: 0.85rem;
   }
-  
+
   .card h2 {
     font-size: 1.5rem;
-  }
-}
-
-/* ===================== BOTONES DE EXPORTACIÓN (TXT/PDF) ===================== */
-
-/* Botón TXT */
-.btn-outline-secondary {
-  border: 2px solid #6c757d !important;
-  color: #6c757d !important;
-  background: #fff !important;
-  font-weight: 700;
-  padding: 10px 20px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  cursor: pointer;
-  
-  &:hover {
-    background: #6c757d !important;
-    color: #fff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-  }
-}
-
-/* Botón PDF */
-.btn-outline-danger {
-  border: 2px solid #dc3545 !important;
-  color: #dc3545 !important;
-  background: #fff !important;
-  font-weight: 700;
-  padding: 10px 20px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  cursor: pointer;
-  
-  &:hover {
-    background: #dc3545 !important;
-    color: #fff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-  }
-}
-
-/* Iconos de los botones */
-.btn-outline-secondary i,
-.btn-outline-danger i {
-  font-size: 1.1rem;
-  margin-right: 6px;
-}
-
-/* Responsive - Ajustar en móviles */
-@media (max-width: 768px) {
-  .btn-outline-secondary,
-  .btn-outline-danger {
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    min-width: 70px;
   }
 }

@@ -3,98 +3,69 @@
     <div class="reservas-wrap">
       <div class="row g-4 justify-content-center">
 
-        <!-- ===================== FORM ===================== -->
+        <!-- ================= FORM ================= -->
         <div class="col-12 col-lg-4">
           <div class="card srh-card shadow-lg">
 
+            <!-- HEADER FORM -->
             <div class="card-header srh-header d-flex align-items-center justify-content-between">
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-calendar-check srh-ico"></i>
-                <span class="fw-bold fs-4">
-                  <span class="fw-bold-emoji fs-1">🗓️</span> Reservas
-                </span>
-              </div>
 
-              <div class="d-flex gap-2 align-items-center">
-                <span class="badge rounded-pill text-bg-primary fs-6">
+              <!-- IZQUIERDA: ICONO + TITULO + BADGE -->
+              <div class="d-flex align-items-center gap-1"> <!-- gap reducido para acercar el badge -->
+                <span class="srh-ico">🗓️</span>
+                <strong>Reservas</strong>
+
+                <!-- BADGE NUEVO / EDITANDO -->
+                <span class="badge rounded-pill">
                   {{ editandoId ? 'Editando' : 'Nuevo' }}
                 </span>
+              </div>
 
-                <button class="btn btn-sm srh-btn-outline" type="button" (click)="limpiar()">
-                  <i class="bi bi-eraser-fill fs-5"></i> Limpiar
+              <!-- DERECHA: BOTÓN LIMPIAR -->
+              <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button class="btn srh-btn-outline" type="button" (click)="limpiar()">
+                  Limpiar
                 </button>
               </div>
+
             </div>
 
+            <!-- BODY FORM -->
             <div class="card-body">
               <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
 
                 <div>
                   <label class="form-label fw-bold">Cliente</label>
-                  <select class="form-select srh-input" formControlName="cliente_id" [disabled]="loadingForm">
+                  <select class="form-select srh-input" formControlName="cliente_id">
                     <option [ngValue]="null">Seleccione...</option>
                     <option *ngFor="let c of clientes" [ngValue]="c.id">
                       {{ c.nombre }} ({{ c.identificacion }})
                     </option>
                   </select>
-                  <small class="text-danger" *ngIf="form.get('cliente_id')?.invalid && form.get('cliente_id')?.touched">
-                    Debe seleccionar un cliente.
-                  </small>
                 </div>
 
-                <!-- ✅ CORREGIDO: Usar habitacionesDisponibles en lugar de habitaciones -->
                 <div>
                   <label class="form-label fw-bold">Habitación</label>
-                  <select class="form-select srh-input" formControlName="habitacion_id" [disabled]="loadingForm">
+                  <select class="form-select srh-input" formControlName="habitacion_id">
                     <option [ngValue]="null">Seleccione...</option>
-                    
-                    <!-- ✅ FILTRO: Solo habitaciones disponibles -->
                     <option *ngFor="let h of habitacionesDisponibles" [ngValue]="h.id">
-                      {{ h.numero }} - {{ h.tipo }} 
-                      <span class="text-muted">(${{ h.precio }})</span>
-                    </option>
-                    
-                    <!-- Mensaje si no hay disponibles -->
-                    <option *ngIf="habitacionesDisponibles.length === 0" [ngValue]="null" disabled>
-                      No hay habitaciones disponibles
+                      {{ h.numero }} - {{ h.tipo }} (${{ h.precio }})
                     </option>
                   </select>
-                  <small class="text-muted">Solo se muestran habitaciones disponibles.</small>
-                  <small class="text-danger" *ngIf="form.get('habitacion_id')?.invalid && form.get('habitacion_id')?.touched">
-                    Debe seleccionar una habitación.
-                  </small>
                 </div>
 
-                <!-- ✅ FECHA INICIO CON VALIDACIÓN -->
                 <div>
                   <label class="form-label fw-bold">Fecha inicio</label>
                   <input type="date" class="form-control srh-input" formControlName="fecha_inicio" />
-                  <small class="text-danger" *ngIf="form.get('fecha_inicio')?.invalid && form.get('fecha_inicio')?.touched">
-                    La fecha de inicio es requerida.
-                  </small>
                 </div>
 
-                <!-- ✅ FECHA FIN CON VALIDACIÓN -->
                 <div>
                   <label class="form-label fw-bold">Fecha fin</label>
                   <input type="date" class="form-control srh-input" formControlName="fecha_fin" />
-                  
-                  <!-- ✅ MENSAJE: Fecha fin menor que fecha inicio -->
-                  <small class="text-danger" *ngIf="form.errors?.['fechaFinInvalida'] && (form.get('fecha_fin')?.touched || form.get('fecha_inicio')?.touched)">
-                    ⚠️ La fecha de fin no puede ser menor a la fecha de inicio.
-                  </small>
-                  
-                  <!-- Mensaje si está vacío -->
-                  <small class="text-danger" *ngIf="form.get('fecha_fin')?.invalid && !form.errors?.['fechaFinInvalida'] && form.get('fecha_fin')?.touched">
-                    La fecha de fin es requerida.
-                  </small>
                 </div>
 
                 <button class="btn srh-btn-primary w-100" type="submit" [disabled]="form.invalid || saving">
-                  <i class="bi bi-save2-fill me-2"></i>
-                  {{ editandoId !== null
-                      ? (saving ? 'Actualizando...' : 'Actualizar')
-                      : (saving ? 'Guardando...' : 'Crear reserva') }}
+                  {{ editandoId ? 'Actualizar' : 'Crear reserva' }}
                 </button>
 
               </form>
@@ -103,106 +74,81 @@
           </div>
         </div>
 
-        <!-- ===================== LISTADO ===================== -->
+        <!-- ================= LISTADO ================= -->
         <div class="col-12 col-lg-8">
           <div class="card srh-card shadow-lg">
 
-            <div class="card-header srh-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <!-- HEADER LISTADO -->
+            <div class="card-header srh-header d-flex align-items-center justify-content-between flex-wrap">
+
               <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-card-list srh-ico"></i>
-                <span class="fw-bold fs-4">
-                  <span class="fw-bold-emoji fs-1">📋</span> Listado
-                </span>
+                <span class="srh-ico">📋</span>
+                <strong>Listado</strong>
               </div>
 
-              <div class="d-flex align-items-center gap-2 ms-auto">
+              <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+
                 <div class="srh-search">
-                  <i class="bi bi-search srh-search-ico"></i>
+                  <span class="srh-search-ico">🔎</span>
                   <input
                     #search
                     class="form-control srh-search-input"
-                    placeholder="🔎 Buscar por cliente, habitación, fechas, estado..."
+                    placeholder="Buscar reservas..."
                     (input)="onBuscar(search.value)"
                   />
                 </div>
 
                 <button class="btn srh-btn-reload" type="button" (click)="cargarReservas()">
-                  <i class="bi bi-arrow-clockwise me-1"></i> Recargar
+                  Recargar
                 </button>
+
               </div>
             </div>
 
+            <!-- BODY LISTADO -->
             <div class="card-body p-0">
+
               <div *ngIf="loadingList" class="p-4 text-center text-muted">
-                <div class="spinner-border me-2" role="status" aria-hidden="true"></div>
                 Cargando reservas...
               </div>
 
-              <div class="table-responsive srh-table-wrap" *ngIf="!loadingList">
-                <table class="table srh-table align-middle mb-0">
+              <div *ngIf="!loadingList" class="table-responsive">
+
+                <table class="table srh-table mb-0">
+
                   <thead>
                     <tr>
-                      <th class="text-center">ID</th>
-                      <th class="text-center">Cliente</th>
-                      <th class="text-center">Habitación</th>
-                      <th class="text-center">Inicio</th>
-                      <th class="text-center">Fin</th>
-                      <th class="text-center">Estado</th>
+                      <th>ID</th>
+                      <th>Cliente</th>
+                      <th>Habitación</th>
+                      <th>Inicio</th>
+                      <th>Fin</th>
+                      <th>Estado</th>
                       <th class="text-center">Acciones</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    <tr *ngFor="let r of reservasVMFiltradas; trackBy: trackById">
-                      <td class="fw-bold text-center">{{ r.id }}</td>
-                      <td class="fw-semibold">{{ r.clienteNombre }}</td>
-                      <td class="fw-semibold text-center">{{ r.habitacionLabel }}</td>
-                      <td class="text-center">{{ r.fecha_inicio }}</td>
-                      <td class="text-center">{{ r.fecha_fin }}</td>
 
-                      <td class="text-center">
+                    <tr *ngFor="let r of reservasVMFiltradas">
+                      <td class="fw-bold">{{ r.id }}</td>
+                      <td>{{ r.clienteNombre }}</td>
+                      <td>{{ r.habitacionLabel }}</td>
+                      <td>{{ r.fecha_inicio }}</td>
+                      <td>{{ r.fecha_fin }}</td>
+
+                      <td>
                         <span class="badge"
-                              [class.text-bg-success]="r.estado === 'confirmada'"
-                              [class.text-bg-danger]="r.estado === 'cancelada'"
-                              [class.text-bg-warning]="r.estado === 'pendiente'">
+                          [class.text-bg-success]="r.estado === 'confirmada'"
+                          [class.text-bg-danger]="r.estado === 'cancelada'"
+                          [class.text-bg-warning]="r.estado === 'pendiente'">
                           {{ r.estado }}
                         </span>
                       </td>
 
                       <td class="text-end">
-                        <div class="d-flex flex-nowrap gap-2 justify-content-end">
-
-                          <button class="btn btn-sm btn-outline-success"
-                                  type="button"
-                                  (click)="editar(r.raw)">
-                            <i class="bi bi-pencil-square me-1"></i> Editar
-                          </button>
-
-                          <button class="btn btn-sm btn-success"
-                                  type="button"
-                                  (click)="confirmar(r.raw)"
-                                  [disabled]="r.estado === 'confirmada' || accionandoId === r.id">
-                            <i class="bi bi-check2-circle me-1"></i>
-                            {{ accionandoId === r.id ? '...' : 'Confirmar' }}
-                          </button>
-
-                          <button class="btn btn-sm btn-warning"
-                                  type="button"
-                                  (click)="cancelar(r.raw)"
-                                  [disabled]="r.estado === 'cancelada' || accionandoId === r.id">
-                            <i class="bi bi-x-circle me-1"></i>
-                            {{ accionandoId === r.id ? '...' : 'Cancelar' }}
-                          </button>
-
-                          <button class="btn btn-sm btn-danger"
-                                  type="button"
-                                  (click)="eliminar(r.raw)"
-                                  [disabled]="deletingId === r.id">
-                            <i class="bi bi-trash me-1"></i>
-                            {{ deletingId === r.id ? 'Eliminando...' : 'Eliminar' }}
-                          </button>
-
-                        </div>
+                        <button class="btn btn-outline-primary btn-sm me-2" (click)="editar(r.raw)">Editar</button>
+                        <button class="btn btn-outline-danger btn-sm" (click)="eliminar(r.raw)">Eliminar</button>
                       </td>
                     </tr>
 
@@ -211,10 +157,13 @@
                         No hay reservas registradas.
                       </td>
                     </tr>
+
                   </tbody>
 
                 </table>
+
               </div>
+
             </div>
 
           </div>
@@ -223,43 +172,4 @@
       </div>
     </div>
   </div>
-
-  <!-- ===================== ✅ MODAL DE ERROR ===================== -->
-  <div class="modal fade show" 
-       [class.d-block]="mostrarErrorModal" 
-       *ngIf="mostrarErrorModal"
-       style="background: rgba(0,0,0,0.5); z-index: 1050;">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
-        
-        <!-- Header -->
-        <div class="modal-header border-0" style="background: linear-gradient(90deg, #ff6b6b, #ee5a6f);">
-          <h5 class="modal-title text-white fw-bold">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            {{ errorTitle }}
-          </h5>
-          <button type="button" class="btn-close btn-close-white" (click)="cerrarErrorModal()"></button>
-        </div>
-        
-        <!-- Body -->
-        <div class="modal-body py-4">
-          <div class="text-center mb-3">
-            <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
-          </div>
-          <p class="text-center fs-5 text-muted mb-0">
-            {{ errorMessage }}
-          </p>
-        </div>
-        
-        <!-- Footer -->
-        <div class="modal-footer border-0 justify-content-center pb-3">
-          <button type="button" class="btn btn-danger px-4" (click)="cerrarErrorModal()">
-            <i class="bi bi-check-circle me-1"></i> Entendido
-          </button>
-        </div>
-        
-      </div>
-    </div>
-  </div>
-
 </div>

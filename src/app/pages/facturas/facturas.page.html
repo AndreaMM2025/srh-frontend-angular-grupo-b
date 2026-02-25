@@ -1,207 +1,152 @@
 <div class="facturas-page py-4">
   <div class="container">
-    <div class="facturas-wrap">
-      <div class="row g-4 justify-content-center">
+    <div class="row g-4 justify-content-center">
 
-        <!-- ===================== FORM ===================== -->
-        <div class="col-12 col-lg-4">
-          <div class="card srh-card shadow-lg">
+      <!-- ===================== FORM ===================== -->
+      <div class="col-12 col-lg-4">
+        <div class="card srh-card shadow-lg">
 
-            <div class="card-header srh-header d-flex align-items-center justify-content-between">
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-receipt-cutoff srh-ico"></i>
-                <span class="fw-bold fs-4">
-                  <span class="fw-bold-emoji fs-1">🧾</span> Facturas
-                </span>
-              </div>
+          <!-- HEADER -->
+          <div class="card-header srh-header">
 
-              <div class="d-flex gap-2 align-items-center">
-                <span class="badge rounded-pill text-bg-primary fs-6">
-                  {{ editandoId ? 'Editando' : 'Nuevo' }}
-                </span>
+            <!-- IZQUIERDA -->
+            <div class="srh-header-left">
+              <i class="bi bi-receipt-cutoff srh-ico"></i>
+              <span class="srh-title">Facturas</span>
 
-                <button class="btn btn-sm srh-btn-outline" type="button" (click)="limpiar()">
-                  <i class="bi bi-eraser-fill fs-5"></i> Limpiar
-                </button>
-              </div>
+              <!-- BADGE NUEVO / EDITANDO -->
+              <span class="srh-badge">
+                {{ editandoId ? 'Editando' : 'Nuevo' }}
+              </span>
             </div>
 
-            <div class="card-body">
-              <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
-
-                <div>
-                  <label class="form-label fw-bold">Cliente</label>
-                  <select class="form-select srh-input" formControlName="cliente_id" [disabled]="loadingForm">
-                    <option [ngValue]="null">Seleccione...</option>
-                    <option *ngFor="let c of clientes" [ngValue]="c.id">
-                      {{ c.nombre }} ({{ c.identificacion }})
-                    </option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="form-label fw-bold">Reserva</label>
-                  <select class="form-select srh-input" formControlName="reserva_id" [disabled]="loadingForm">
-                    <option [ngValue]="null">Seleccione...</option>
-                    <option *ngFor="let r of reservas" [ngValue]="r.id">
-                      {{ labelReserva(r.id) }}
-                    </option>
-                  </select>
-
-                  <small class="text-muted" *ngIf="form.value.reserva_id as rid">
-                    Estado reserva/factura:
-                    <b>{{ estadoFactura(rid) }}</b>
-                  </small>
-                </div>
-
-                <div>
-                  <label class="form-label fw-bold">Total</label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input type="number" class="form-control srh-input" formControlName="total" />
-                  </div>
-                </div>
-
-                <div>
-                  <label class="form-label fw-bold">Fecha</label>
-                  <input type="date" class="form-control srh-input" formControlName="fecha" />
-                </div>
-
-                <button class="btn srh-btn-primary w-100" type="submit" [disabled]="form.invalid || saving">
-                  <i class="bi bi-save2-fill me-2"></i>
-                  {{ editandoId !== null
-                      ? (saving ? 'Actualizando...' : 'Actualizar')
-                      : (saving ? 'Guardando...' : 'Guardar') }}
-                </button>
-
-              </form>
+            <!-- DERECHA -->
+            <div class="srh-header-right">
+              <button type="button" class="srh-btn-clear" (click)="limpiar()">
+                Limpiar
+              </button>
             </div>
+
+          </div>
+
+          <!-- BODY -->
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
+
+              <div>
+                <label class="form-label fw-bold">Cliente</label>
+                <select class="form-select srh-input" formControlName="cliente_id">
+                  <option [ngValue]="null">Seleccione...</option>
+                  <option *ngFor="let c of clientes" [ngValue]="c.id">
+                    {{ c.nombre }} ({{ c.identificacion }})
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Reserva</label>
+                <select class="form-select srh-input" formControlName="reserva_id">
+                  <option [ngValue]="null">Seleccione...</option>
+                  <option *ngFor="let r of reservas" [ngValue]="r.id">
+                    {{ labelReserva(r.id) }}
+                  </option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Total</label>
+                <input type="number" class="form-control srh-input" formControlName="total" />
+              </div>
+
+              <div>
+                <label class="form-label fw-bold">Fecha</label>
+                <input type="date" class="form-control srh-input" formControlName="fecha" />
+              </div>
+
+              <button class="btn srh-btn-primary w-100" type="submit">
+                Guardar
+              </button>
+
+            </form>
           </div>
         </div>
-
-        <!-- ===================== LISTADO ===================== -->
-        <div class="col-12 col-lg-8">
-          <div class="card srh-card shadow-lg">
-
-            <div class="card-header srh-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-              <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-card-list srh-ico"></i>
-                <span class="fw-bold fs-4">
-                  <span class="fw-bold-emoji fs-1">📋</span> Listado
-                </span>
-              </div>
-
-              <div class="d-flex align-items-center gap-2 ms-auto">
-                <div class="srh-search">
-                  <i class="bi bi-search srh-search-ico"></i>
-                  <input
-                    #search
-                    class="form-control srh-search-input"
-                    placeholder="🔎Buscar por cliente, reserva, total, fecha, estado..."
-                    (input)="onBuscar(search.value)"
-                  />
-                </div>
-
-                <button class="btn srh-btn-reload" type="button" (click)="cargarFacturas()">
-                  <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body p-0">
-
-              <div *ngIf="loadingList" class="p-4 text-center text-muted">
-                <div class="spinner-border me-2" role="status" aria-hidden="true"></div>
-                Cargando facturas...
-              </div>
-
-              <div class="table-responsive srh-table-wrap" *ngIf="!loadingList">
-                <table class="table srh-table align-middle mb-0 facturas-table">
-                  <thead>
-                    <tr>
-                      <th class="text-center" style="width:50px">ID</th>
-                      <th style="width:150px">Cliente</th>
-                      <th style="width:200px">Reserva</th>
-                      <th class="text-end" style="width:90px">Total</th>
-                      <th class="text-center" style="width:100px">Fecha</th>
-                      <th class="text-center" style="width:90px">Estado</th>
-                      <th class="text-center" style="width:320px">Acciones</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr *ngFor="let f of facturasVMFiltradas; trackBy: trackById">
-                      <td class="fw-bold text-center fs-5">{{ f.id }}</td>
-
-                      <td>
-                        <div class="d-flex flex-column">
-                          <span class="fw-semibold fs-6">{{ f.clienteNombre }}</span>
-                        </div>
-                      </td>
-
-                      <td>
-                        <span class="fs-6">{{ f.reservaLabel }}</span>
-                      </td>
-
-                      <td class="text-end fw-bold text-success fs-6">${{ f.total | number:'1.2-2' }}</td>
-
-                      <td class="text-center fs-6">{{ f.fecha }}</td>
-                      
-                      <td class="text-center">
-                        <span class="badge fs-6"
-                              [class.bg-success]="f.estado === 'emitida'"
-                              [class.bg-danger]="f.estado === 'cancelada'"
-                              [class.bg-warning]="f.estado === 'pendiente'">
-                          {{ f.estado }}
-                        </span>
-                      </td>
-
-                      <td class="text-center">
-                        <div class="action-buttons">
-                          <button class="btn-action btn-txt" 
-                                  (click)="descargarTxt(f.raw)"
-                                  title="Descargar TXT">
-                            <i class="bi bi-file-earmark-text"></i> TXT
-                          </button>
-
-                          <button class="btn-action btn-pdf" 
-                                  (click)="imprimirPdf(f.raw)"
-                                  title="Imprimir PDF">
-                            <i class="bi bi-file-earmark-pdf"></i> PDF
-                          </button>
-
-                          <button class="btn-action btn-edit" 
-                                  (click)="editar(f.raw)"
-                                  title="Editar">
-                            <i class="bi bi-pencil-square"></i> Editar
-                          </button>
-
-                          <button class="btn-action btn-delete" 
-                                  (click)="eliminar(f.raw)"
-                                  title="Eliminar"
-                                  [disabled]="deletingId === f.id">
-                            <i class="bi bi-trash"></i> Eliminar
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr *ngIf="facturasVMFiltradas.length === 0">
-                      <td colspan="7" class="text-center text-muted py-5">
-                        <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                        <span class="fs-5">No hay facturas registradas.</span>
-                      </td>
-                    </tr>
-
-                  </tbody>
-                </table>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <!-- ===================== LISTADO ===================== -->
+      <div class="col-12 col-lg-8">
+        <div class="card srh-card shadow-lg">
+
+          <!-- HEADER -->
+          <div class="card-header srh-header">
+            <div class="srh-header-left">
+              <i class="bi bi-card-list srh-ico"></i>
+              <span class="srh-title">Listado</span>
+            </div>
+
+            <div class="srh-header-right">
+              <div class="srh-search">
+                <i class="bi bi-search srh-search-ico"></i>
+                <input
+                  class="form-control srh-search-input"
+                  placeholder="Buscar..."
+                  (input)="onBuscar($event.target.value)"
+                />
+              </div>
+
+              <button class="srh-btn-reload" (click)="cargarFacturas()">
+                Recargar
+              </button>
+            </div>
+          </div>
+
+          <!-- BODY -->
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table srh-table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Reserva</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let f of facturasVMFiltradas">
+                    <td>{{ f.id }}</td>
+                    <td>{{ f.clienteNombre }}</td>
+                    <td>{{ f.reservaLabel }}</td>
+                    <td>${{ f.total }}</td>
+                    <td>{{ f.fecha }}</td>
+
+                    <td>
+                      <span class="badge">{{ f.estado }}</span>
+                    </td>
+
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn-action btn-edit" (click)="editar(f.raw)">Editar</button>
+                        <button class="btn-action btn-delete" (click)="eliminar(f.raw)">Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="facturasVMFiltradas.length === 0">
+                    <td colspan="7" class="text-center py-4">No hay datos</td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
