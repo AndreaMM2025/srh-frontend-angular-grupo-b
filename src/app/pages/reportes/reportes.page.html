@@ -7,15 +7,17 @@
         <div class="card-header srh-header d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center gap-2">
             <i class="bi bi-graph-up-arrow srh-ico"></i>
-            <span class="fw-bold fs-4">📊 Reportes</span>
+            <span class="fw-bold fs-4">
+              <span class="fw-bold-emoji fs-1">📊</span> Reportes
+            </span>
           </div>
 
           <div class="d-flex gap-2 align-items-center">
-            <button class="btn btn-sm btn-outline-danger" type="button" (click)="limpiarTodo()">
+            <!-- BOTÓN LIMPIAR DATOS -->
+            <button class="btn btn-sm btn-outline-danger" type="button" (click)="limpiarTodo()" title="Eliminar todos los datos">
               <i class="bi bi-trash-fill me-1"></i> Limpiar Datos
             </button>
-
-            <!-- SIN FONDO -->
+            
             <button class="btn btn-sm btn-outline-light" type="button" (click)="cargarReporteGeneral()">
               <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
             </button>
@@ -31,18 +33,14 @@
               <label class="form-label fw-bold">Fecha Inicio</label>
               <input type="date" class="form-control" formControlName="fechaInicio" />
             </div>
-
             <div class="col-md-4">
               <label class="form-label fw-bold">Fecha Fin</label>
               <input type="date" class="form-control" formControlName="fechaFin" />
             </div>
-
             <div class="col-md-4">
-              <!-- SIN FONDO -->
               <button type="button" class="btn btn-primary me-2" (click)="aplicarFiltros()">
                 <i class="bi bi-funnel-fill me-1"></i> Aplicar Filtros
               </button>
-
               <button type="button" class="btn btn-outline-secondary" (click)="limpiarFiltros()">
                 <i class="bi bi-x-circle me-1"></i> Limpiar
               </button>
@@ -54,25 +52,399 @@
       <!-- ===================== TABS ===================== -->
       <div class="card srh-card shadow-lg">
         <div class="card-body">
-
-          <!-- TABS -->
           <ul class="nav nav-tabs mb-4">
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'general'" (click)="setActiveTab('general')">📈 General</button></li>
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'ingresos'" (click)="setActiveTab('ingresos')">💰 Ingresos</button></li>
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'clientes'" (click)="setActiveTab('clientes')">👥 Clientes</button></li>
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'habitaciones'" (click)="setActiveTab('habitaciones')">🏨 Habitaciones</button></li>
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'facturas'" (click)="setActiveTab('facturas')">🧾 Facturas</button></li>
-            <li class="nav-item"><button class="nav-link" [class.active]="activeTab === 'reservas'" (click)="setActiveTab('reservas')">📅 Reservas</button></li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'general'" (click)="setActiveTab('general')">
+                📈 General
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'ingresos'" (click)="setActiveTab('ingresos')">
+                💰 Ingresos
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'clientes'" (click)="setActiveTab('clientes')">
+                👥 Clientes
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'habitaciones'" (click)="setActiveTab('habitaciones')">
+                🏨 Habitaciones
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'facturas'" (click)="setActiveTab('facturas')">
+                🧾 Facturas
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" [class.active]="activeTab === 'reservas'" (click)="setActiveTab('reservas')">
+                📅 Reservas
+              </button>
+            </li>
           </ul>
 
           <!-- Loading -->
           <div *ngIf="loading" class="text-center py-5">
-            <div class="spinner-border text-primary me-2"></div>
+            <div class="spinner-border text-primary me-2" role="status"></div>
             <span>Cargando reporte...</span>
           </div>
 
-          <!-- AQUÍ VA TODO TU RESTO DEL CÓDIGO (REPORTES) SIN CAMBIOS -->
-          <!-- NO LO TOQUÉ PARA NO DAÑAR TU LÓGICA -->
+          <!-- ===================== REPORTE GENERAL ===================== -->
+          <div *ngIf="!loading && activeTab === 'general' && reporteGeneral" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>📊 Resumen General del Sistema</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('general')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-danger" (click)="generarPDF('general')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+            
+            <p class="text-muted">Generado: {{ reporteGeneral.fecha_generacion }}</p>
+
+            <div class="row g-4 mt-3">
+              <div class="col-md-4">
+                <div class="card bg-primary text-white p-3">
+                  <h5>👥 Total Clientes</h5>
+                  <h2 class="mb-0">{{ reporteGeneral.resumen.total_clientes }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-success text-white p-3">
+                  <h5>🏨 Total Habitaciones</h5>
+                  <h2 class="mb-0">{{ reporteGeneral.resumen.total_habitaciones }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-info text-white p-3">
+                  <h5>📅 Total Reservas</h5>
+                  <h2 class="mb-0">{{ reporteGeneral.resumen.total_reservas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-warning text-dark p-3">
+                  <h5>🧾 Total Facturas</h5>
+                  <h2 class="mb-0">{{ reporteGeneral.resumen.total_facturas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-danger text-white p-3">
+                  <h5>💵 Total Pagos</h5>
+                  <h2 class="mb-0">{{ reporteGeneral.resumen.total_pagos }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-success text-white p-3">
+                  <h5>💰 Total Recaudado</h5>
+                  <h2 class="mb-0">${{ reporteGeneral.ingresos.total_recaudado.toFixed(2) }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===================== REPORTE INGRESOS ===================== -->
+          <div *ngIf="!loading && activeTab === 'ingresos' && reporteIngresos" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>💰 Reporte de Ingresos</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('ingresos')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-danger" (click)="generarPDF('ingresos')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="card bg-success text-white p-3">
+                  <h5>Total Recaudado</h5>
+                  <h2 class="mb-0">${{ reporteIngresos.total_recaudado.toFixed(2) }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-primary text-white p-3">
+                  <h5>Total Facturas</h5>
+                  <h2 class="mb-0">{{ reporteIngresos.total_facturas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-info text-white p-3">
+                  <h5>Total Pagos</h5>
+                  <h2 class="mb-0">{{ reporteIngresos.total_pagos }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===================== REPORTE CLIENTES ===================== -->
+          <div *ngIf="!loading && activeTab === 'clientes' && reporteClientes.length" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>👥 Reporte de Clientes</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('clientes')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-secondary me-2" (click)="generarPDF('clientes')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Identificación</th>
+                    <th>Reservas</th>
+                    <th>Facturas</th>
+                    <th>Total Pagado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of reporteClientes">
+                    <td>{{ c.cliente_nombre }}</td>
+                    <td>{{ c.cliente_identificacion }}</td>
+                    <td>{{ c.total_reservas }}</td>
+                    <td>{{ c.total_facturas }}</td>
+                    <td class="text-success fw-bold">${{ c.total_pagado.toFixed(2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===================== REPORTE HABITACIONES ===================== -->
+          <div *ngIf="!loading && activeTab === 'habitaciones' && reporteHabitaciones" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>🏨 Reporte de Habitaciones</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('habitaciones')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-secondary me-2" (click)="generarPDF('habitaciones')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3">
+                  <h5>Total</h5>
+                  <h2 class="mb-0">{{ reporteHabitaciones.total_habitaciones }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3">
+                  <h5>Disponibles</h5>
+                  <h2 class="mb-0">{{ reporteHabitaciones.habitaciones_disponibles }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-danger text-white p-3">
+                  <h5>Ocupadas</h5>
+                  <h2 class="mb-0">{{ reporteHabitaciones.habitaciones_ocupadas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-info text-white p-3">
+                  <h5>% Ocupación</h5>
+                  <h2 class="mb-0">{{ reporteHabitaciones.porcentaje_ocupacion }}%</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th>Reservas Activas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let h of reporteHabitaciones.habitaciones">
+                    <td>{{ h.numero }}</td>
+                    <td>{{ h.tipo }}</td>
+                    <td>${{ h.precio }}</td>
+                    <td>
+                      <span class="badge" [class.bg-success]="h.estado === 'Disponible'" [class.bg-danger]="h.estado === 'Ocupada'">
+                        {{ h.estado }}
+                      </span>
+                    </td>
+                    <td>{{ h.reservas_activas }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===================== REPORTE FACTURAS ===================== -->
+          <div *ngIf="!loading && activeTab === 'facturas' && reporteFacturas" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>🧾 Reporte de Facturas</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('facturas')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-secondary me-2" (click)="generarPDF('facturas')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3">
+                  <h5>Total Facturas</h5>
+                  <h2 class="mb-0">{{ reporteFacturas.total_facturas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3">
+                  <h5>Monto Total</h5>
+                  <h2 class="mb-0">${{ reporteFacturas.total_monto.toFixed(2) }}</h2>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card bg-info text-white p-3">
+                  <h5>Emitidas</h5>
+                  <h2 class="mb-0">{{ reporteFacturas.facturas_emitidas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card bg-warning text-dark p-3">
+                  <h5>Pendientes</h5>
+                  <h2 class="mb-0">{{ reporteFacturas.facturas_pendientes }}</h2>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card bg-danger text-white p-3">
+                  <h5>Canceladas</h5>
+                  <h2 class="mb-0">{{ reporteFacturas.facturas_canceladas }}</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Factura</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let f of reporteFacturas.facturas">
+                    <td>#{{ f.factura_id }}</td>
+                    <td>{{ f.cliente }}</td>
+                    <td class="text-success fw-bold">${{ f.total }}</td>
+                    <td>{{ f.fecha }}</td>
+                    <td>
+                      <span class="badge" 
+                            [class.bg-success]="f.estado === 'emitida'"
+                            [class.bg-warning]="f.estado === 'pendiente'"
+                            [class.bg-danger]="f.estado === 'cancelada'">
+                        {{ f.estado }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===================== REPORTE RESERVAS ===================== -->
+          <div *ngIf="!loading && activeTab === 'reservas' && reporteReservas" class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3>📅 Reporte de Reservas</h3>
+              <div>
+                <button class="btn btn-outline-secondary me-2" (click)="generarTXT('reservas')">
+                  <i class="bi bi-file-earmark-text me-1"></i> TXT
+                </button>
+                <button class="btn btn-outline-danger" (click)="generarPDF('reservas')">
+                  <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+              <div class="col-md-3">
+                <div class="card bg-primary text-white p-3">
+                  <h5>Total Reservas</h5>
+                  <h2 class="mb-0">{{ reporteReservas.total_reservas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white p-3">
+                  <h5>Confirmadas</h5>
+                  <h2 class="mb-0">{{ reporteReservas.reservas_confirmadas }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-warning text-dark p-3">
+                  <h5>Pendientes</h5>
+                  <h2 class="mb-0">{{ reporteReservas.reservas_pendientes }}</h2>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-danger text-white p-3">
+                  <h5>Canceladas</h5>
+                  <h2 class="mb-0">{{ reporteReservas.reservas_canceladas }}</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Reserva</th>
+                    <th>Cliente</th>
+                    <th>Habitación</th>
+                    <th>Fecha Inicio</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of reporteReservas.reservas">
+                    <td>#{{ r.reserva_id }}</td>
+                    <td>{{ r.cliente }}</td>
+                    <td>{{ r.habitacion }}</td>
+                    <td>{{ r.fecha_inicio }}</td>
+                    <td>
+                      <span class="badge" 
+                            [class.bg-success]="r.estado === 'confirmada'"
+                            [class.bg-warning]="r.estado === 'pendiente'"
+                            [class.bg-danger]="r.estado === 'cancelada'">
+                        {{ r.estado }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Sin datos -->
+          <div *ngIf="!loading && ((activeTab === 'clientes' && !reporteClientes.length) || (activeTab !== 'general' && activeTab !== 'clientes' && !reporteIngresos && !reporteHabitaciones && !reporteFacturas && !reporteReservas))" class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-3">No hay datos disponibles para mostrar.</p>
+          </div>
 
         </div>
       </div>

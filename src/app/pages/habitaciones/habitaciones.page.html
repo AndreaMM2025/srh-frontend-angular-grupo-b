@@ -4,27 +4,22 @@
 
       <div class="row g-4 justify-content-center">
 
-        <!-- ===================== FORM ===================== -->
+        <!-- FORM -->
         <div class="col-12 col-lg-4">
           <div class="card srh-card shadow-lg">
 
-            <!-- HEADER FORM -->
             <div class="card-header srh-head d-flex align-items-center justify-content-between">
 
-              <!-- IZQUIERDA: ICONO + TITULO + BADGE -->
-              <div class="d-flex align-items-center gap-1"> <!-- gap reducido para acercar el badge -->
+              <div class="d-flex align-items-center gap-1">
                 <span class="srh-ico">🏨</span>
                 <strong>Habitaciones</strong>
 
-                <!-- BADGE NUEVO / EDITANDO -->
                 <span class="badge rounded-pill">
                   {{ editandoId !== null ? 'Editando' : 'Nuevo' }}
                 </span>
               </div>
 
-              <!-- DERECHA: BOTÓN LIMPIAR -->
-              <div class="d-flex gap-2 align-items-center flex-wrap">
-                <span class="badge rounded-pill fs-6"></span>
+              <div class="d-flex gap-1 align-items-center flex-wrap">
                 <button type="button" class="btn srh-btn-outline" (click)="limpiar()">
                   Limpiar
                 </button>
@@ -32,9 +27,7 @@
 
             </div>
 
-            <!-- BODY FORM -->
             <div class="card-body">
-
               <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
 
                 <div>
@@ -67,16 +60,14 @@
                 </button>
 
               </form>
-
             </div>
           </div>
         </div>
 
-        <!-- ===================== LISTADO ===================== -->
+        <!-- LISTADO -->
         <div class="col-12 col-lg-8">
           <div class="card srh-card shadow-lg">
 
-            <!-- HEADER LISTADO -->
             <div class="card-header srh-head d-flex align-items-center justify-content-between">
 
               <div class="d-flex align-items-center gap-2">
@@ -86,7 +77,6 @@
 
               <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
 
-                <!-- BUSCADOR -->
                 <div class="input-group" style="max-width:300px;">
                   <span class="input-group-text">
                     <i class="bi bi-search"></i>
@@ -100,7 +90,6 @@
                   />
                 </div>
 
-                <!-- BOTÓN RECARGAR -->
                 <button type="button" class="btn srh-btn-reload" (click)="cargar()">
                   Recargar
                 </button>
@@ -108,20 +97,16 @@
               </div>
             </div>
 
-            <!-- BODY LISTADO -->
             <div class="card-body p-0">
 
-              <!-- LOADING -->
               <div *ngIf="loading" class="text-center py-4">
                 <div class="spinner-border text-primary"></div>
                 <div class="mt-2">Cargando habitaciones...</div>
               </div>
 
-              <!-- TABLA -->
               <div *ngIf="!loading" class="table-responsive">
 
                 <table class="table srh-table mb-0">
-
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -129,14 +114,13 @@
                       <th>Tipo</th>
                       <th>Precio</th>
                       <th>Disponible</th>
-                      <th style="width:40px" class="text-center">Acciones</th>
+                      <th style="width:220px" class="text-center">Acciones</th>
                     </tr>
                   </thead>
 
                   <tbody>
 
                     <tr *ngFor="let h of habitacionesFiltradas; trackBy: trackById">
-
                       <td class="fw-bold">{{ h.id }}</td>
                       <td>{{ h.numero }}</td>
                       <td>{{ h.tipo }}</td>
@@ -148,23 +132,21 @@
                         </span>
                       </td>
 
-                      <td class="text-end">
+                      <td class="text-center">
+                        <div class="btn-group btn-group-sm flex-wrap">
 
-                        <button type="button" class="btn btn-outline-primary btn-sm me-2" (click)="editar(h)">
-                          Editar
-                        </button>
+                          <!-- EDITAR -->
+                          <button class="srh-btn-action" (click)="editar(h)">
+                            Editar
+                          </button>
 
-                        <button
-                          type="button"
-                          class="btn btn-outline-danger btn-sm"
-                          (click)="eliminar(h)"
-                          [disabled]="deletingId === h.id"
-                        >
-                          {{ deletingId === h.id ? 'Eliminando...' : 'Eliminar' }}
-                        </button>
+                          <!-- ELIMINAR -->
+                          <button class="srh-btn-action" (click)="eliminar(h)" [disabled]="deletingId === h.id">
+                            {{ deletingId === h.id ? 'Eliminando...' : 'Eliminar' }}
+                          </button>
 
+                        </div>
                       </td>
-
                     </tr>
 
                     <tr *ngIf="habitacionesFiltradas.length === 0">
@@ -174,13 +156,11 @@
                     </tr>
 
                   </tbody>
-
                 </table>
 
               </div>
 
             </div>
-
           </div>
         </div>
 

@@ -29,7 +29,7 @@
 
           </div>
 
-          <!-- BODY -->
+          <!-- BODY FORM -->
           <div class="card-body">
             <form [formGroup]="form" (ngSubmit)="guardar()" class="d-grid gap-3">
 
@@ -76,7 +76,7 @@
       <div class="col-12 col-lg-8">
         <div class="card srh-card shadow-lg">
 
-          <!-- HEADER -->
+          <!-- HEADER LISTADO -->
           <div class="card-header srh-header">
             <div class="srh-header-left">
               <i class="bi bi-card-list srh-ico"></i>
@@ -99,7 +99,7 @@
             </div>
           </div>
 
-          <!-- BODY -->
+          <!-- BODY LISTADO -->
           <div class="card-body p-0">
             <div class="table-responsive">
               <table class="table srh-table align-middle mb-0">
@@ -131,6 +131,8 @@
                       <div class="action-buttons">
                         <button class="btn-action btn-edit" (click)="editar(f.raw)">Editar</button>
                         <button class="btn-action btn-delete" (click)="eliminar(f.raw)">Eliminar</button>
+                        <button class="btn-action btn-txt" (click)="descargarTxt(f.raw)">TXT</button>
+                        <button class="btn-action btn-pdf" (click)="imprimirPdf(f.raw)">PDF</button>
                       </div>
                     </td>
                   </tr>

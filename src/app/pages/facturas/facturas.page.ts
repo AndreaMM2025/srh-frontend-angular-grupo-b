@@ -68,15 +68,12 @@ export class FacturasPage implements OnInit {
   });
 
   ngOnInit(): void {
-    // ✅ listado rápido (no depende de combos)
     this.cargarFacturas();
-
-    // ✅ combos aparte (no bloquean tabla)
     this.cargarCombos();
   }
 
   // ==========================
-  // LISTADO (RÁPIDO + REPINTA)
+  // LISTADO
   // ==========================
   cargarFacturas() {
     this.loadingList = true;
@@ -84,12 +81,7 @@ export class FacturasPage implements OnInit {
 
     this.facturasService
       .listar()
-      .pipe(
-        finalize(() => {
-          this.loadingList = false;
-          this.cdr.detectChanges();
-        })
-      )
+      .pipe(finalize(() => { this.loadingList = false; this.cdr.detectChanges(); }))
       .subscribe({
         next: (d) => {
           this.zone.run(() => {
@@ -107,7 +99,7 @@ export class FacturasPage implements OnInit {
   }
 
   // ==========================
-  // COMBOS (SIN BLOQUEAR TABLA)
+  // COMBOS
   // ==========================
   cargarCombos() {
     this.loadingForm = true;
@@ -117,63 +109,49 @@ export class FacturasPage implements OnInit {
       pending--;
       if (pending <= 0) {
         this.loadingForm = false;
-        // ✅ cuando llegan combos, re-armamos labels/estado
         this.rebuildVM();
         this.cdr.detectChanges();
       }
     };
 
     this.clientesService.listar().subscribe({
-      next: (d) => {
-        this.clientes = d ?? [];
-        this.rebuildVM();
-        this.cdr.detectChanges();
-      },
-      error: (e) => console.error(e),
-      complete: done,
+      next: (d) => { this.clientes = d ?? []; done(); },
+      error: (e) => { console.error(e); done(); }
     });
 
     this.reservasService.listar().subscribe({
-      next: (d) => {
-        this.reservas = d ?? [];
-        this.rebuildVM();
-        this.cdr.detectChanges();
-      },
-      error: (e) => console.error(e),
-      complete: done,
+      next: (d) => { this.reservas = d ?? []; done(); },
+      error: (e) => { console.error(e); done(); }
     });
   }
 
   // ==========================
-  // VM (para pintar bonito/rápido)
+  // VM
   // ==========================
-private rebuildVM() {
-  const vm: FacturaVM[] = (this.facturas ?? []).map((f) => {
-    const clienteNombre = this.nombreCliente(f.cliente_id);
-    const reservaLabel = this.labelReserva(f.reserva_id);
+  private rebuildVM() {
+    const vm: FacturaVM[] = (this.facturas ?? []).map((f) => {
+      const clienteNombre = this.nombreCliente(f.cliente_id);
+      const reservaLabel = this.labelReserva(f.reserva_id);
+      const estado = this.estadoFactura(f.reserva_id);
 
-    // ✅ estado sale de reservas
-    const estado = this.estadoFactura(f.reserva_id);
+      return {
+        id: f.id,
+        cliente_id: f.cliente_id,
+        reserva_id: f.reserva_id,
+        total: f.total,
+        fecha: f.fecha,
+        clienteNombre,
+        reservaLabel,
+        estado,
+        raw: f,
+      };
+    });
 
-    return {
-      id: f.id,
-      cliente_id: f.cliente_id,
-      reserva_id: f.reserva_id,
-      total: f.total,
-      fecha: f.fecha,
-      clienteNombre,
-      reservaLabel,
-      estado,
-      raw: f,
-    };
-  });
+    vm.sort((a, b) => a.id - b.id);
 
-  // ✅ orden ASC (1 arriba, 2 abajo…)
-  vm.sort((a, b) => a.id - b.id);
-
-  this.facturasVM = vm;
-  this.facturasVMFiltradas = [...vm];
-}
+    this.facturasVM = vm;
+    this.facturasVMFiltradas = [...vm];
+  }
 
   // ==========================
   // BUSCAR
@@ -185,13 +163,11 @@ private rebuildVM() {
       this.cdr.detectChanges();
       return;
     }
-
-    this.facturasVMFiltradas = this.facturasVM.filter((f) => {
-      return `${f.id} ${f.clienteNombre} ${f.reservaLabel} ${f.total} ${f.fecha} ${f.estado}`
+    this.facturasVMFiltradas = this.facturasVM.filter((f) =>
+      `${f.id} ${f.clienteNombre} ${f.reservaLabel} ${f.total} ${f.fecha} ${f.estado}`
         .toLowerCase()
-        .includes(q);
-    });
-
+        .includes(q)
+    );
     this.cdr.detectChanges();
   }
 
@@ -199,12 +175,7 @@ private rebuildVM() {
   // FORM
   // ==========================
   limpiar() {
-    this.form.reset({
-      cliente_id: null,
-      reserva_id: null,
-      total: 0,
-      fecha: '',
-    });
+    this.form.reset({ cliente_id: null, reserva_id: null, total: 0, fecha: '' });
     this.editandoId = null;
     this.cdr.detectChanges();
   }
@@ -235,11 +206,8 @@ private rebuildVM() {
     this.saving = true;
     this.cdr.detectChanges();
 
-    // UPDATE
     if (this.editandoId !== null) {
       const id = this.editandoId;
-
-      // ✅ optimista
       const nuevo: Factura = { id, ...payload } as any;
       this.facturas = this.facturas.map((x) => (x.id === id ? nuevo : x));
       this.rebuildVM();
@@ -247,12 +215,7 @@ private rebuildVM() {
 
       this.facturasService
         .actualizar(id, payload as any)
-        .pipe(
-          finalize(() => {
-            this.saving = false;
-            this.cdr.detectChanges();
-          })
-        )
+        .pipe(finalize(() => { this.saving = false; this.cdr.detectChanges(); }))
         .subscribe({
           next: (resp) => {
             this.facturas = this.facturas.map((x) => (x.id === id ? resp : x));
@@ -260,10 +223,7 @@ private rebuildVM() {
             this.limpiar();
             this.cdr.detectChanges();
           },
-          error: (e) => {
-            console.error(e);
-            this.cargarFacturas();
-          },
+          error: (e) => { console.error(e); this.cargarFacturas(); },
         });
 
       return;
@@ -272,15 +232,10 @@ private rebuildVM() {
     // CREATE
     this.facturasService
       .crear(payload as any)
-      .pipe(
-        finalize(() => {
-          this.saving = false;
-          this.cdr.detectChanges();
-        })
-      )
+      .pipe(finalize(() => { this.saving = false; this.cdr.detectChanges(); }))
       .subscribe({
         next: (resp) => {
-          this.facturas = [...this.facturas, resp]; // (ascendente) agregamos al final
+          this.facturas = [...this.facturas, resp];
           this.rebuildVM();
           this.limpiar();
           this.cdr.detectChanges();
@@ -294,7 +249,6 @@ private rebuildVM() {
     if (!ok) return;
 
     this.deletingId = f.id;
-
     const backup = [...this.facturas];
     this.facturas = this.facturas.filter((x) => x.id !== f.id);
     this.rebuildVM();
@@ -302,12 +256,7 @@ private rebuildVM() {
 
     this.facturasService
       .eliminar(f.id)
-      .pipe(
-        finalize(() => {
-          this.deletingId = null;
-          this.cdr.detectChanges();
-        })
-      )
+      .pipe(finalize(() => { this.deletingId = null; this.cdr.detectChanges(); }))
       .subscribe({
         next: () => {},
         error: (e) => {
@@ -320,22 +269,16 @@ private rebuildVM() {
   }
 
   // ==========================
-  // ESTADO (VA DE LA MANO CON RESERVA)
+  // ESTADO
   // ==========================
-  estadoFactura(reserva_id: number): 'emitida' | 'cancelada' | 'pendiente' {
-  const r = this.reservas.find((x) => x.id === reserva_id);
-  const est = (r?.estado ?? '').toLowerCase();
+  estadoFactura(reserva_id: number): FacturaEstado {
+    const r = this.reservas.find((x) => x.id === reserva_id);
+    const est = (r?.estado ?? '').toLowerCase();
+    if (est.includes('cancel')) return 'cancelada';
+    if (est.includes('confirm')) return 'emitida';
+    return 'pendiente';
+  }
 
-  if (est.includes('cancel')) return 'cancelada';
-  if (est.includes('confirm')) return 'emitida';
-  return 'pendiente';
-}
- badgeFactura(reserva_id: number) {
-  const e = this.estadoFactura(reserva_id);
-  if (e === 'emitida') return 'srh-b-ok';
-  if (e === 'cancelada') return 'srh-b-busy';
-  return 'srh-b-warn';
-}
   // ==========================
   // HELPERS
   // ==========================
@@ -354,13 +297,8 @@ private rebuildVM() {
     return item.id;
   }
 
-  badgeFacturaEstado(e: 'emitida' | 'cancelada' | 'pendiente') {
-  if (e === 'emitida') return 'srh-b-ok';
-  if (e === 'cancelada') return 'srh-b-busy';
-  return 'srh-b-warn';
-}
   // ==========================
-  // TXT / PDF
+  // DESCARGAS TXT / PDF
   // ==========================
   descargarTxt(f: Factura) {
     const cliente = this.nombreCliente(f.cliente_id);

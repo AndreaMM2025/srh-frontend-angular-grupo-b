@@ -73,13 +73,10 @@ export class ReservasPage implements OnInit {
   });
 
   ngOnInit(): void {
-    // ✅ listado rápido (no depende de combos)
     this.cargarReservas();
-    // ✅ combos aparte (no bloquean tabla)
     this.cargarCombos();
   }
 
-  // ✅ VALIDADOR: fecha_fin debe ser >= fecha_inicio
   private fechaFinValida(control: AbstractControl): ValidationErrors | null {
     const fechaInicio = control.get('fecha_inicio')?.value;
     const fechaFin = control.get('fecha_fin')?.value;
@@ -103,7 +100,7 @@ export class ReservasPage implements OnInit {
   }
 
   // ==========================
-  // LISTADO (RÁPIDO + REPINTA)
+  // LISTADO
   // ==========================
   cargarReservas() {
     this.loadingList = true;
@@ -131,9 +128,6 @@ export class ReservasPage implements OnInit {
       });
   }
 
-  // ==========================
-  // COMBOS (SIN BLOQUEAR TABLA)
-  // ==========================
   cargarCombos() {
     this.loadingForm = true;
 
@@ -142,7 +136,6 @@ export class ReservasPage implements OnInit {
       pending--;
       if (pending <= 0) {
         this.loadingForm = false;
-        // ✅ cuando llegan combos, re-armamos labels/estado
         this.actualizarHabitacionesDisponibles();
         this.rebuildVM();
         this.cdr.detectChanges();
@@ -170,9 +163,6 @@ export class ReservasPage implements OnInit {
     });
   }
 
-  // ==========================
-  // VM (para pintar bonito/rápido)
-  // ==========================
   private rebuildVM() {
     const vm: ReservaVM[] = (this.reservas ?? []).map((r) => {
       const clienteNombre = this.nombreCliente(r.cliente_id);
@@ -191,16 +181,12 @@ export class ReservasPage implements OnInit {
       };
     });
 
-    // ✅ orden ASC
     vm.sort((a, b) => a.id - b.id);
 
     this.reservasVM = vm;
     this.reservasVMFiltradas = [...vm];
   }
 
-  // ==========================
-  // FILTRO HABITACIONES DISPONIBLES
-  // ==========================
   private actualizarHabitacionesDisponibles() {
     const reservasActivas = new Set(
       this.reservas
@@ -213,9 +199,6 @@ export class ReservasPage implements OnInit {
     );
   }
 
-  // ==========================
-  // BUSCAR
-  // ==========================
   onBuscar(texto: string) {
     const q = (texto ?? '').toLowerCase().trim();
     if (!q) {
@@ -237,9 +220,6 @@ export class ReservasPage implements OnInit {
     return item.id;
   }
 
-  // ==========================
-  // FORM
-  // ==========================
   limpiar() {
     this.form.reset({
       cliente_id: null,
@@ -263,9 +243,6 @@ export class ReservasPage implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ==========================
-  // GUARDAR (OPTIMISTA)
-  // ==========================
   guardar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -283,11 +260,8 @@ export class ReservasPage implements OnInit {
       fecha_fin: String(v.fecha_fin),
     };
 
-    // UPDATE - Optimista
     if (this.editandoId !== null) {
       const id = this.editandoId;
-
-      // ✅ Actualizar UI primero (optimista)
       const nuevo: Reserva = { id, ...payload, estado: 'pendiente' } as any;
       this.reservas = this.reservas.map((x) => (x.id === id ? nuevo : x));
       this.rebuildVM();
@@ -295,10 +269,7 @@ export class ReservasPage implements OnInit {
       this.cdr.detectChanges();
 
       this.reservasService.actualizar(id, payload as any)
-        .pipe(finalize(() => {
-          this.saving = false;
-          this.cdr.detectChanges();
-        }))
+        .pipe(finalize(() => { this.saving = false; this.cdr.detectChanges(); }))
         .subscribe({
           next: (resp) => {
             this.reservas = this.reservas.map((x) => (x.id === id ? resp : x));
@@ -308,62 +279,35 @@ export class ReservasPage implements OnInit {
           },
           error: (e) => {
             console.error(e);
-            if (e.status === 400) {
-              this.mostrarError('⚠️ Reserva No Permitida', e.error.detail);
-            }
-            // Revertir si falla
             this.cargarReservas();
           },
         });
       return;
     }
 
-    // CREATE - Optimista
-    const nuevaReserva: Reserva = { 
-      id: Date.now(), // temporal
-      ...payload, 
-      estado: 'pendiente' 
-    } as any;
-    
-    // ✅ Agregar a UI primero (optimista)
+    const nuevaReserva: Reserva = { id: Date.now(), ...payload, estado: 'pendiente' } as any;
     this.reservas = [nuevaReserva, ...this.reservas];
     this.rebuildVM();
     this.actualizarHabitacionesDisponibles();
     this.cdr.detectChanges();
 
     this.reservasService.crear(payload as any)
-      .pipe(finalize(() => {
-        this.saving = false;
-        this.cdr.detectChanges();
-      }))
+      .pipe(finalize(() => { this.saving = false; this.cdr.detectChanges(); }))
       .subscribe({
         next: (resp) => {
-          // Reemplazar temporal con real
-          this.reservas = this.reservas.map(x => 
-            x.id === nuevaReserva.id ? resp : x
-          );
+          this.reservas = this.reservas.map(x => x.id === nuevaReserva.id ? resp : x);
           this.rebuildVM();
           this.limpiar();
           this.cdr.detectChanges();
         },
         error: (e) => {
           console.error(e);
-          if (e.status === 400) {
-            this.mostrarError('⚠️ Reserva No Permitida', e.error.detail);
-          }
-          // Revertir si falla
           this.cargarReservas();
         },
       });
   }
 
-  // ==========================
-  // ACCIONES (CONFIRMAR/CANCELAR/ELIMINAR)
-  // ==========================
   confirmar(r: Reserva) {
-    this.accionandoId = r.id;
-
-    // ✅ Optimista: actualizar UI primero
     const backup = { ...r };
     r.estado = 'confirmada';
     this.rebuildVM();
@@ -371,31 +315,22 @@ export class ReservasPage implements OnInit {
     this.cdr.detectChanges();
 
     this.reservasService.confirmar(r.id)
-      .pipe(finalize(() => {
-        this.accionandoId = null;
-        this.cdr.detectChanges();
-      }))
+      .pipe(finalize(() => { this.cdr.detectChanges(); }))
       .subscribe({
         next: (resp) => {
           this.reservas = this.reservas.map(x => x.id === r.id ? resp : x);
           this.rebuildVM();
           this.cdr.detectChanges();
         },
-        error: (e) => {
-          console.error(e);
-          // Revertir si falla
+        error: () => {
           const idx = this.reservas.findIndex(x => x.id === r.id);
           if (idx !== -1) this.reservas[idx] = backup;
           this.rebuildVM();
-          this.cdr.detectChanges();
         },
       });
   }
 
   cancelar(r: Reserva) {
-    this.accionandoId = r.id;
-
-    // ✅ Optimista: actualizar UI primero
     const backup = { ...r };
     r.estado = 'cancelada';
     this.rebuildVM();
@@ -403,33 +338,22 @@ export class ReservasPage implements OnInit {
     this.cdr.detectChanges();
 
     this.reservasService.cancelar(r.id)
-      .pipe(finalize(() => {
-        this.accionandoId = null;
-        this.cdr.detectChanges();
-      }))
+      .pipe(finalize(() => { this.cdr.detectChanges(); }))
       .subscribe({
         next: (resp) => {
           this.reservas = this.reservas.map(x => x.id === r.id ? resp : x);
           this.rebuildVM();
-          this.cdr.detectChanges();
         },
-        error: (e) => {
-          console.error(e);
-          // Revertir si falla
+        error: () => {
           const idx = this.reservas.findIndex(x => x.id === r.id);
           if (idx !== -1) this.reservas[idx] = backup;
           this.rebuildVM();
-          this.cdr.detectChanges();
         },
       });
   }
 
   eliminar(r: Reserva) {
     if (!confirm(`¿Eliminar la reserva #${r.id}?`)) return;
-
-    this.deletingId = r.id;
-
-    // ✅ Backup para rollback + eliminar de UI primero (optimista)
     const backup = [...this.reservas];
     this.reservas = this.reservas.filter(x => x.id !== r.id);
     this.rebuildVM();
@@ -437,27 +361,13 @@ export class ReservasPage implements OnInit {
     this.cdr.detectChanges();
 
     this.reservasService.eliminar(r.id)
-      .pipe(finalize(() => {
-        this.deletingId = null;
-        this.cdr.detectChanges();
-      }))
+      .pipe(finalize(() => { this.cdr.detectChanges(); }))
       .subscribe({
-        next: () => {
-          // Ya está eliminado en UI, solo confirmamos
-        },
-        error: (e) => {
-          console.error(e);
-          // Rollback si falla
-          this.reservas = backup;
-          this.rebuildVM();
-          this.cdr.detectChanges();
-        },
+        next: () => {},
+        error: () => { this.reservas = backup; this.rebuildVM(); },
       });
   }
 
-  // ==========================
-  // MODAL DE ERROR
-  // ==========================
   mostrarError(titulo: string, mensaje: string) {
     this.errorTitle = titulo;
     this.errorMessage = mensaje;
@@ -471,9 +381,6 @@ export class ReservasPage implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // ==========================
-  // HELPERS
-  // ==========================
   private nombreCliente(id: number) {
     const c = this.clientes.find((x) => x.id === id);
     return c ? c.nombre : `Cliente #${id}`;

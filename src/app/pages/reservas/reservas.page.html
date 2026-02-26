@@ -10,18 +10,15 @@
             <!-- HEADER FORM -->
             <div class="card-header srh-header d-flex align-items-center justify-content-between">
 
-              <!-- IZQUIERDA: ICONO + TITULO + BADGE -->
-              <div class="d-flex align-items-center gap-1"> <!-- gap reducido para acercar el badge -->
+              <div class="d-flex align-items-center gap-1">
                 <span class="srh-ico">🗓️</span>
                 <strong>Reservas</strong>
 
-                <!-- BADGE NUEVO / EDITANDO -->
                 <span class="badge rounded-pill">
                   {{ editandoId ? 'Editando' : 'Nuevo' }}
                 </span>
               </div>
 
-              <!-- DERECHA: BOTÓN LIMPIAR -->
               <div class="d-flex gap-2 align-items-center flex-wrap">
                 <button class="btn srh-btn-outline" type="button" (click)="limpiar()">
                   Limpiar
@@ -78,7 +75,6 @@
         <div class="col-12 col-lg-8">
           <div class="card srh-card shadow-lg">
 
-            <!-- HEADER LISTADO -->
             <div class="card-header srh-header d-flex align-items-center justify-content-between flex-wrap">
 
               <div class="d-flex align-items-center gap-2">
@@ -146,9 +142,35 @@
                         </span>
                       </td>
 
-                      <td class="text-end">
-                        <button class="btn btn-outline-primary btn-sm me-2" (click)="editar(r.raw)">Editar</button>
-                        <button class="btn btn-outline-danger btn-sm" (click)="eliminar(r.raw)">Eliminar</button>
+                      <td class="text-center">
+
+                        <!-- BOTONES HORIZONTALES, TODOS SIN FONDO -->
+                        <div class="d-flex gap-1 justify-content-center flex-nowrap">
+
+                          <button class="btn btn-outline-primary btn-sm" (click)="editar(r.raw)">
+                            Editar
+                          </button>
+
+                          <button 
+                            *ngIf="r.estado !== 'confirmada'" 
+                            class="btn btn-outline-primary btn-sm" 
+                            (click)="confirmar(r.raw)">
+                            Confirmar
+                          </button>
+
+                          <button 
+                            *ngIf="r.estado !== 'cancelada'" 
+                            class="btn btn-outline-primary btn-sm" 
+                            (click)="cancelar(r.raw)">
+                            Cancelar
+                          </button>
+
+                          <button class="btn btn-outline-danger btn-sm" (click)="eliminar(r.raw)">
+                            Eliminar
+                          </button>
+
+                        </div>
+
                       </td>
                     </tr>
 

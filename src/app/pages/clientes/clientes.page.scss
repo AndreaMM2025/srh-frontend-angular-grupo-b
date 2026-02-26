@@ -1,5 +1,5 @@
 /* ================= FUENTE PROFESIONAL ================= */
-/* Commit 7: Comentarios finales UI clientes frontend */
+/* Commit UI clientes frontend */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -41,8 +41,8 @@ html, body {
 /* ===== CLIENTES MÁS GRANDE Y NEGRITA ===== */
 .srh-head strong {
   color: black !important;
-  font-size: 1.1rem !important;   /* un poco más grande */
-  font-weight: 700 !important;    /* negrita */
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
 }
 
 /* HEADER IZQUIERDA */
@@ -152,8 +152,8 @@ html, body {
 h5.listado,
 .srh-title,
 h5 {
-  font-size: 1.3rem !important;   /* un poco más grande */
-  font-weight: 700 !important;    /* negrita */
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
 }
 
 /* ================= TABLA MÁS GRANDE ================= */
@@ -199,4 +199,31 @@ input[readonly] {
   font-size: 1rem;
   padding: 0.6rem 0.75rem;
   border: 1px solid #cbd5e1;
+}
+
+/* ===================================================== */
+/* ===== BOTONES EDITAR Y ELIMINAR SIN FONDO ===== */
+/* ===================================================== */
+
+.srh-btn-action {
+  background: transparent !important;      /* SIN FONDO */
+  color: black !important;                 /* TEXTO NEGRO */
+  border: 1.5px solid black !important;   /* BORDE NEGRO */
+  padding: 5px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Hover bonito */
+.srh-btn-action:hover {
+  background: black !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+/* Separación botones */
+.btn-group .srh-btn-action {
+  margin: 2px;
 }

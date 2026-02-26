@@ -1,4 +1,4 @@
-/* ================= CSS COMPLETO USUARIOS ================= */
+/* ================= CSS COMPLETO USUARIOS ================= */ 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 html, body {
@@ -28,7 +28,7 @@ html, body {
 
 /* HEADER */
 .srh-head {
-  color: #f9fafb; /* color general del header */
+  color: #f9fafb;
   background: linear-gradient(90deg, #a2adc7, #a2adc7);
   font-weight: 700;
   padding: 1.25rem 1.5rem;
@@ -41,7 +41,7 @@ html, body {
 
 /* TEXTO USUARIOS NEGRO */
 .srh-head strong {
-  color: black !important;  /* forzar negro */
+  color: black !important;
 }
 
 /* ICONOS */
@@ -65,7 +65,7 @@ html, body {
   padding: 12px 18px;
   font-weight: 700;
   font-size: 1rem;
-  color: #fbf9f9;
+  color: #fff;
   background: linear-gradient(135deg, #475b87, #335865);
   box-shadow: 0 6px 15px rgb(98, 96, 96);
   transition: all .2s ease;
@@ -82,12 +82,8 @@ html, body {
   background: transparent;
   font-size: 0.85rem;
   padding: 4px 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
 }
 .srh-btn-clear:hover {
   background: rgba(0,0,0,0.05);
@@ -102,9 +98,6 @@ html, body {
   padding: 4px 8px;
   font-weight: 600;
   border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* BOTÓN RECARGAR */
@@ -123,16 +116,10 @@ html, body {
   position: relative;
 }
 .srh-search-ico {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
   opacity: 0;
-  pointer-events: none;
-  font-size: 1.1rem;
 }
 .srh-search-input {
-  padding: 10px 14px 10px 36px;
+  padding: 10px 14px;
   border-radius: 10px;
   font-size: 0.95rem;
   border: 1px solid #cbd5e1;
@@ -142,54 +129,49 @@ html, body {
 .srh-table {
   font-size: 0.95rem;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
 }
 .srh-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   color: black;
   font-weight: 700;
   padding: 14px 10px;
   background: linear-gradient(90deg, #a2adc7, #a2adc7);
   text-transform: uppercase;
   font-size: 0.85rem;
-  letter-spacing: 0.5px;
 }
 .srh-table tbody td {
   padding: 10px 8px;
-  vertical-align: middle;
   border-top: 1px solid #e5e7eb;
-  font-size: 0.95rem;
 }
 .srh-table tbody tr:hover {
   background: #f9fafb;
 }
 
-/* BOTONES ACCIONES TABLA */
-.btn-outline-primary,
-.btn-outline-danger,
-.btn-outline-success,
-.btn-outline-dark {
-  border-radius: 8px;
-  font-size: 0.85rem;
-  padding: 4px 8px;
-  margin: 1px;
-}
-.btn-group.flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  justify-content: center;
-}
-
-/* FORM CHECKBOX ESTADO */
+/* FORM CHECKBOX */
 .form-check-input {
   width: 18px;
   height: 18px;
-  margin-top: 0.2rem;
 }
 .form-check-label {
   font-weight: 700;
+}
+
+/* ========================================== */
+/* ===== EDITAR Y ELIMINAR SIN FONDO ========= */
+/* ========================================== */
+
+table .btn-outline-primary,
+table .btn-outline-danger {
+  background: transparent !important;
+  border: 1px solid black !important;
+  color: black !important;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Hover */
+table .btn-outline-primary:hover,
+table .btn-outline-danger:hover {
+  background: rgba(0,0,0,0.08) !important;
+  color: black !important;
 }

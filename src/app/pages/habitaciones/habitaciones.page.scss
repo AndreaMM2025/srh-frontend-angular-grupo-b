@@ -28,26 +28,25 @@ html, body {
 
 /* HEADER */
 .srh-head {
-  color: #f9fafb;
   background: linear-gradient(90deg, #a2adc7, #a2adc7);
   font-weight: 700;
-  padding: 1.25rem 1.5rem;
-  letter-spacing: 0.5px;
+  padding: 0.8rem 1rem;
   font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* TEXTO HABITACIONES NEGRO */
+/* TEXTO HABITACIONES */
 .srh-head strong {
   color: black !important;
+  font-size: 1.1rem;
 }
 
 /* ICONOS */
 .srh-ico {
-  font-size: 1.8rem;
-  color: #ffffff;
+  font-size: 1.4rem;
+  color: black;
 }
 
 /* INPUTS */
@@ -58,14 +57,14 @@ html, body {
   border: 1px solid #cbd5e1;
 }
 
-/* BOTÓN PRINCIPAL */
+/* BOTÓN GUARDAR */
 .srh-btn-primary {
   border: none;
   border-radius: 10px;
-  padding: 4px px;
+  padding: 10px;
   font-weight: 700;
   font-size: 1rem;
-  color: #fbf9f9;
+  color: #fff;
   background: linear-gradient(135deg, #475b87, #335865);
   box-shadow: 0 6px 15px rgb(98, 96, 96);
   transition: all .2s ease;
@@ -75,16 +74,15 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* BOTÓN LIMPIAR - TEXTO Y BORDE NEGRO */
+/* BOTÓN LIMPIAR */
 .srh-btn-outline {
   background: transparent !important;
-  border: 1px solid #000000 !important; /* Borde negro */
-  color: #000000 !important;            /* Texto negro */
+  border: 1px solid black !important;
+  color: black !important;
   border-radius: 999px !important;
-  font-size: 0.75rem !important;
+  font-size: 0.65rem !important;
   font-weight: 600;
-  padding: 3px 3px !important;
-  transition: all .2s ease;
+  padding: 3px 10px !important;
 }
 
 .srh-btn-outline:hover {
@@ -104,7 +102,7 @@ html, body {
 
 /* TABLA */
 .srh-table {
-  font-size: 0.95rem;
+  font-size: 1rem;
   width: 100%;
 }
 
@@ -115,33 +113,57 @@ html, body {
   z-index: 1;
   color: #000;
   font-weight: 700;
-  padding: 14px 10px;
-  background: linear-gradient(90deg, #a2adc7, #a2adc7);
+  padding: 14px;
+  background: #a2adc7;
   text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  font-size: 0.9rem;
 }
 
 /* FILAS */
 .srh-table tbody td {
-  padding: 14px 10px;
+  padding: 12px;
   vertical-align: middle;
   border-top: 1px solid #e5e7eb;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .srh-table tbody tr:hover {
   background: #f1f5f9;
 }
 
-/* NUEVO / EDITANDO - SIN FONDO, TEXTO Y BORDE NEGRO */
+/* NUEVO / EDITANDO */
 .srh-head .badge {
   background: transparent !important;
-  color: #000000 !important;
-  border: 1px solid #000000 !important;
-  padding: 4px 10px;
+  color: black !important;
+  border: 1px solid black !important;
+  padding: 2px 10px;
   font-weight: 600;
-  font-size: 0.73rem;
+  font-size: 0.8rem;
   border-radius: 999px;
-  margin-left: 0.25px;
+}
+
+/* ================================================= */
+/* ===== BOTONES EDITAR Y ELIMINAR COMO CLIENTES ===== */
+/* ================================================= */
+.srh-btn-action {
+  background: transparent !important;
+  color: black !important;
+  border: 1.5px solid black !important;
+  padding: 4px 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Hover bonito */
+.srh-btn-action:hover {
+  background: black !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+
+/* Separación */
+.btn-group .srh-btn-action {
+  margin: 2px;
 }

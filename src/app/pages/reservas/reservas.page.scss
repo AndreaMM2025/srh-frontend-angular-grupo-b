@@ -26,7 +26,7 @@ html, body {
 /* ENCABEZADO */
 .srh-header {
   border: 0;
-  color: #000; /* ahora negro para los badges y texto */
+  color: #000;
   background: linear-gradient(90deg, #a2adc7, #a2adc7);
   font-weight: 700;
   padding: 1.25rem 1.5rem;
@@ -57,7 +57,7 @@ html, body {
   padding: 12px 18px;
   font-weight: 700;
   font-size: 1rem;
-  color: #fbf9f9;
+  color: #fff;
   background: linear-gradient(135deg, #475b87, #335865);
   box-shadow: 0 6px 15px rgb(98, 96, 96);
   transition: all .2s ease;
@@ -67,7 +67,7 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* BOTÓN LIMPIAR (igual que badge, negro, redondeado) */
+/* BOTÓN LIMPIAR */
 .srh-btn-outline {
   background: transparent !important;
   border: 1px solid #000 !important;
@@ -137,7 +137,7 @@ html, body {
   background: #f1f5f9;
 }
 
-/* ===== NUEVO / EDITANDO SIN FONDO ===== */
+/* ===== BADGE NUEVO / EDITANDO SIN FONDO ===== */
 .srh-header .badge {
   background: transparent !important;
   color: #000 !important;
@@ -146,5 +146,25 @@ html, body {
   font-weight: 600;
   font-size: 0.85rem;
   border-radius: 999px;
-  margin-left: 2px; /* más cerca del título */
+  margin-left: 2px;
+}
+
+/* ================================================= */
+/* ===== EDITAR Y ELIMINAR SIN FONDO (SOLO BORDE) ===== */
+/* ================================================= */
+
+table .btn-outline-primary,
+table .btn-outline-danger {
+  background: transparent !important;
+  border: 1px solid black !important;
+  color: black !important;
+  font-weight: 600;
+  padding: 4px 10px;
+}
+
+/* Hover */
+table .btn-outline-primary:hover,
+table .btn-outline-danger:hover {
+  background: rgba(0,0,0,0.08) !important;
+  color: black !important;
 }

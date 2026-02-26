@@ -104,7 +104,7 @@
                     <th>Teléfono</th>
                     <th>Correo</th>
                     <th>Nacionalidad</th>
-                    <th style="width:220px" class="text-center">Acciones</th>
+                    <th style="width:250px" class="text-center">Acciones</th>
                   </tr>
                 </thead>
 
@@ -119,15 +119,19 @@
 
                     <td class="text-center">
                       <div class="btn-group btn-group-sm flex-wrap">
-                        <button class="btn btn-outline-primary" (click)="editar(c)">Editar</button>
-                        <button class="btn btn-outline-danger" (click)="eliminar(c)">Eliminar</button>
 
-                        <a class="btn btn-outline-success" [routerLink]="['/habitaciones']" [queryParams]="{ clienteId: c.id }">
+                        <!-- Botones Editar y Eliminar circulares -->
+                        <button class="srh-btn-action" (click)="editar(c)">Editar</button>
+                        <button class="srh-btn-action" (click)="eliminar(c)">Eliminar</button>
+
+                        <!-- Botones Habitaciones y Reservas circulares -->
+                        <a class="srh-btn-action btn-success" [routerLink]="['/habitaciones']" [queryParams]="{ clienteId: c.id }">
                           Habitaciones
                         </a>
-                        <a class="btn btn-outline-dark" [routerLink]="['/reservas']" [queryParams]="{ clienteId: c.id }">
+                        <a class="srh-btn-action btn-dark" [routerLink]="['/reservas']" [queryParams]="{ clienteId: c.id }">
                           Reservas
                         </a>
+
                       </div>
                     </td>
                   </tr>

@@ -11,7 +11,7 @@
             <div class="d-flex align-items-center gap-2">
               <span class="srh-ico">👤</span>
               <strong>Usuarios</strong>
-              <span class="badge rounded-pill fs-6">
+              <span class="badge rounded-pill">
                 {{ editandoId ? 'Editando' : 'Nuevo' }}
               </span>
             </div>
@@ -29,18 +29,17 @@
 
               <div>
                 <label class="form-label fw-bold">Nombre</label>
-                <input type="text" class="form-control srh-input" formControlName="nombre" placeholder="Juan Pérez">
+                <input type="text" class="form-control srh-input" formControlName="nombre">
               </div>
 
               <div>
                 <label class="form-label fw-bold">Username</label>
-                <input type="text" class="form-control srh-input" formControlName="username" placeholder="jperez">
+                <input type="text" class="form-control srh-input" formControlName="username">
               </div>
 
               <div>
                 <label class="form-label fw-bold">Contraseña</label>
-                <input type="password" class="form-control srh-input" formControlName="password"
-                       [placeholder]="editandoId ? 'Dejar en blanco para mantener' : '123456'">
+                <input type="password" class="form-control srh-input" formControlName="password">
               </div>
 
               <div>
@@ -52,7 +51,7 @@
 
               <div>
                 <label class="form-label fw-bold">Email</label>
-                <input type="email" class="form-control srh-input" formControlName="email" placeholder="correo@hotel.com">
+                <input type="email" class="form-control srh-input" formControlName="email">
               </div>
 
               <div class="form-check">
@@ -84,7 +83,6 @@
 
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <div class="srh-search">
-                <span class="srh-search-ico"></span>
                 <input #search class="form-control srh-search-input"
                        placeholder="Buscar usuario..."
                        (input)="onBuscar(search.value)">
@@ -106,20 +104,20 @@
               <table class="table srh-table mb-0">
                 <thead>
                   <tr>
-                    <th style="width:60px">ID</th>
+                    <th>ID</th>
                     <th>Nombre</th>
                     <th>Username</th>
                     <th>Rol</th>
                     <th>Email</th>
-                    <th style="width:80px">Estado</th>
-                    <th style="width:180px" class="text-center">Acciones</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <tr *ngFor="let u of usuariosVMFiltradas">
                     <td class="fw-bold">{{ u.id }}</td>
-                    <td class="fw-semibold">{{ u.nombre }}</td>
+                    <td>{{ u.nombre }}</td>
                     <td>{{ u.username }}</td>
                     <td>{{ getRolLabel(u.rol) }}</td>
                     <td>{{ u.email }}</td>
@@ -128,10 +126,8 @@
                     </td>
 
                     <td class="text-center">
-                      <div class="btn-group flex-wrap">
-                        <button class="btn btn-outline-primary" (click)="editar(u.raw)">Editar</button>
-                        <button class="btn btn-outline-danger" (click)="eliminar(u.raw)">Eliminar</button>
-                      </div>
+                      <button class="btn btn-outline-primary me-2" (click)="editar(u.raw)">Editar</button>
+                      <button class="btn btn-outline-danger" (click)="eliminar(u.raw)">Eliminar</button>
                     </td>
                   </tr>
 
