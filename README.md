@@ -16,7 +16,7 @@ Integrantes:
 - Keyla Sisalima Torres
 - Gregory Morán Silva  
 
-Fecha: 24/02/2026  
+Fecha: 26/02/2026  
 Docente: Darío Huilcapi  
 
 ---
